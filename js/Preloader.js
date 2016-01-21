@@ -6,7 +6,7 @@ preload.prototype = {
         this.game.load.image('mic', 'assets/images/mic_profile_icon.png');
     },
     create: function(){
-        //this.game.state.start("StartMenu");
+        this.game.state.start("StartMenu");
     },
     update: function(){
     },

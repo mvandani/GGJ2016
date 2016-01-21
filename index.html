@@ -8,11 +8,13 @@
 </style>
 	<script type="text/javascript" src="libs/phaser.min.js"></script>
 	<script type="text/javascript" src="js/Preloader.js"></script>
+	<script type="text/javascript" src="js/StartMenu.js"></script>
 
 	<script type="text/javascript">
 		(function(){
 			var game = new Phaser.Game(800, 600, Phaser.CANVAS, "game");
 			game.state.add("Preload", preload);
+			game.state.add("StartMenu", menu);
 			game.state.start("Preload");
 		})();    
 	</script>
