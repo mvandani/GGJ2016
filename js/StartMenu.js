@@ -8,6 +8,7 @@ menu.prototype = {
         // Create images in the main menu???
         this.game.add.sprite(this.game.rnd.integerInRange(0, this.game.world.width), this.game.rnd.integerInRange(0, this.game.world.height), 'mic');
         this.game.add.sprite(this.game.rnd.integerInRange(0, this.game.world.width), this.game.rnd.integerInRange(0, this.game.world.height), 'jen');
+        this.game.add.sprite(this.game.rnd.integerInRange(0, this.game.world.width), this.game.rnd.integerInRange(0, this.game.world.height), 'mvd');
     },
     update: function(){
     },
