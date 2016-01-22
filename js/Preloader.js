@@ -8,6 +8,7 @@ preload.prototype = {
         this.game.load.image('mvd', 'assets/images/mvd_profile_icon.png');
         this.game.load.image('tnh', 'assets/images/tnh_profile_icon.png');
         this.game.load.image('kev', 'assets/images/kev_profile_icon.png');
+        this.game.load.image('todd', 'assets/images/todd_profile_icon.png');
     },
     create: function(){
         this.game.state.start("StartMenu");
