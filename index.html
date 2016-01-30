@@ -10,6 +10,7 @@
 		<script type="text/javascript" src="js/states/preload.js"></script>
 		<script type="text/javascript" src="js/states/mainMenu.js"></script>
 		<script type="text/javascript" src="js/states/game.js"></script>
+		<script type="text/javascript" src="js/states/bgtest.js"></script>
 
 		<script type="text/javascript">
 			(function(){
@@ -17,11 +18,11 @@
 				game.state.add("Preload", Preload);
 				game.state.add("MainMenu", MainMenu);
 				game.state.add("GameState", GameState);
-				game.state.start("Preload");
-			})();    
+				game.state.add("BGTestState", BGTestState);
+				game.state.start("BGTestState");
+			})();
 		</script>
 	</head>
 	<body>
-		GGJ2016
 	</body>
 </html>
