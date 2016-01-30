@@ -88,7 +88,7 @@ MainMenu.prototype = {
             y = 300;
             font = fontAssets.instructionsFontStyle;
         } else {
-            text += 'Made by Huge Assets';
+            text += 'Made by Massive Assets';
             align = 'center'
             x = this.game.world.centerX;
             y = this.game.world.centerY;

@@ -10,18 +10,19 @@ GameManager = function(game){
 				{shownTime: 15, inputTime: 3, followerCount: 6, priest:"priest_6", keys: [Phaser.KeyCode.A, Phaser.KeyCode.D]},
 				{shownTime: 15, inputTime: 3, followerCount: 7, priest:"priest_7", keys: [Phaser.KeyCode.Q, Phaser.KeyCode.E]}
 	];
-	this.maxPriests = 7;
-	this.followersNeeded = 200;
-	this.totalPopulation = 300;
-	this.followersPenalty = 2;
-	this.failedChantPenalty = 2;
-	this.followerPenaltyThreshold = 20;
-	// The followers for each level should be done programatically...
-	this.followersNeededForEachLevel = [5, 15, 35, 60, 100, 150, 200];
+    this.reset();
 };
 
 GameManager.prototype.constructor = GameManager;
 
 GameManager.prototype = {
-	
+	reset: function(){
+        this.maxPriests = 7;
+        this.followersNeeded = 200;
+        this.totalPopulation = 300;
+        this.followersPenalty = 2;
+		this.followerPenaltyThreshold = 20;
+        // The followers for each level should be done programatically...
+        this.followersNeededForEachLevel = [5, 15, 35, 60, 100, 150, 200];
+    }
 };
