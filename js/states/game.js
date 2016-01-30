@@ -22,50 +22,49 @@ GameState.prototype = {
 
 		// The group for the priests
 		this.priestGroup = this.game.world.add(new PriestGroup(this.game));
+		this.priestGroup.gainFollowers.add(this.onFollowersGained, this);
+		this.priestGroup.onFailedChant.add(this.onFailedChant, this);
+		this.priestGroup.onSuccessfulInput.add(this.onSuccessfulInput, this);
 		this.priestGroup.onPriestAdded.add(this.onPriestAdded, this);
 		this.priestGroup.onPriestLost.add(this.onPriestLost, this);
-		this.priestGroup.onFollowersGained.add(this.onFollowersGained, this);
-		this.priestGroup.onFollowersLost.add(this.onFollowersLost, this);
-		this.priestGroup.onSuccessfulInput.add(this.onSuccessfulInput, this);
+		this.priestGroup.onFailedInput.add(this.onFailedInput, this);
 		this.priestGroup.x = 70;
 		this.priestGroup.y = this.game.world.height - 180;
 		// The group for the party goers
 		this.worshipperGroup = this.game.world.add(new WorshipperGroup(this.game));
 		this.lastSuccessfulPriest = null;
 
+		this.amountNeededForNextLevel = 0;
+		this.followersGainedThisLevel = 0;
 		this.totalFollowers = 0;
+		this.totalDefectors = 0;
 
 		// Follower gauge
 		this.gaugeWidth = 512;
-		this.guageX = (this.game.world.width / 2) - (this.gaugeWidth / 2);
+		this.gaugeX = (this.game.world.width / 2) - (this.gaugeWidth / 2);
 
+		//BG for the bars
+	    this.progressBarBG = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
+	    this.progressBarBG.beginFill(0xFFFFFF);
+	    this.progressBarBG.drawRect(0, 0, this.gaugeWidth, 32);
+	    this.progressBarBG.endFill();
+	    // Top "good" bar
+	    this.levelUpProgressBar = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
+	    this.levelUpProgressBar.beginFill(0x00FF00);
+	    this.levelUpProgressBar.drawRect(0, 0, 1, 20);
+	    this.levelUpProgressBar.endFill();
+	    // Bottom "bad" bar
+	    this.levelDownProgressBar = this.game.add.graphics(this.gaugeX + this.gaugeWidth, this.game.world.height - 3);
+	    this.levelDownProgressBar.beginFill(0xFF0000);
+	    this.levelDownProgressBar.drawRect(0, 0, 1, 12);
+	    this.levelDownProgressBar.endFill();
+	    this.levelDownProgressBar.angle = 180;
 		// Outlines for both bars
-		this.followersGaugeOutline = this.game.add.graphics(this.guageX, this.game.world.height - 35);
+		this.followersGaugeOutline = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
 	    this.followersGaugeOutline.lineStyle(2, 0x000000, 1);
 	    this.followersGaugeOutline.drawRect(0, 0, this.gaugeWidth, 32);
 	    this.followersGaugeOutline.moveTo(0, 20);
 	    this.followersGaugeOutline.lineTo(this.gaugeWidth, 20);
-
-
-	    this.followersGaugeBG = this.game.add.graphics(this.guageX, this.game.world.height - 35);
-	    this.followersGaugeBG.beginFill(0xFF0000);
-	    this.followersGaugeBG.drawRect(0, 0, this.gaugeWidth, 32);
-	    this.followersGaugeBG.endFill();
-	    this.followersGaugeBG.visible = false;
-
-	    this.followersGauge = this.game.add.graphics(this.guageX, this.game.world.height - 35);
-	    this.followersGauge.beginFill(0x00FF00);
-	    this.followersGauge.drawRect(0, 0, 1, 32);
-	    this.followersGauge.endFill();
-	    this.followersGauge.visible = false;
-	    //this.followersGauge.angle = 180;
-	    for(var i = 0; i < 6; i++)
-	    {
-	    	var numFollowers = this.game.gameManager.followersNeededForEachLevel[i];
-	    	var yRatio = numFollowers / this.game.gameManager.followersNeeded;
-	    	this.followersGaugeOutline.moveTo(yRatio * this.gaugeWidth, 32);
-	    	this.followersGaugeOutline.lineTo(yRatio * this.gaugeWidth, -10);
-	    }
 
 		this.elapsedSinceTime = this.game.time.now;
 
@@ -87,6 +86,12 @@ GameState.prototype = {
 		this.game.debug.text("Time: " + (this.game.time.now - this.elapsedSinceTime), 32, this.game.world.height - 32);
 	},
 	shutdown: function(){
+		this.priestGroup.onPriestAdded.remove(this.onPriestAdded, this);
+		this.priestGroup.onPriestLost.remove(this.onPriestLost, this);
+		this.priestGroup.gainFollowers.remove(this.onFollowersGained, this);
+		this.priestGroup.onFailedChant.remove(this.onFailedChant, this);
+		this.priestGroup.onSuccessfulInput.remove(this.onSuccessfulInput, this);
+		this.priestGroup.onFailedInput.remove(this.onFailedInput, this);
 	},
 	beginGame: function(){
 		this.introTimer.destroy();
@@ -142,35 +147,67 @@ GameState.prototype = {
 		// Set the last preist as the last one to hit a success
 		this.lastSuccessfulPriest = priest;
 	},
+	onFailedInput: function(){
+		this.totalDefectors += this.game.gameManager.followersPenalty;
+		this.checkFollowerCount();
+	},
 	onPriestAdded: function(priest){
-		
+		// Reset the amount needed for the next level
+		this.amountNeededForNextLevel = this.game.gameManager.followersNeededForEachLevel[this.priestGroup.numPriests - 1];
+		this.followersGainedThisLevel = 0;
+		this.checkFollowerCount();
 	},
 	onPriestLost: function(){
 		if(this.priestGroup.numPriests == 0)
+		{
+			this.checkFollowerCount();
 			return;
-		var followerIndex = this.priestGroup.numPriests - 1;
-		var followersLost = this.totalFollowers - (this.game.gameManager.followersNeededForEachLevel[followerIndex] - (this.priestGroup.numPriests * 10));
-		this.onFollowersLost(followersLost);
+		}
+		//var followerIndex = this.priestGroup.numPriests - 1;
+		//var followersLost = this.totalFollowers - (this.game.gameManager.followersNeededForEachLevel[followerIndex] - (this.priestGroup.numPriests * 10));
+		// Reset the amount needed for the delevel progress bar
+		// First, get the percentage of what has already progressed.
+		// We reward the player with the majority percentage of what was either progressed or not progressed.
+		var percentRemaining = this.followersGainedThisLevel / this.amountNeededForNextLevel;
+		if(percentRemaining < 0.5 && percentRemaining > 0)
+			percentRemaining = 1 - percentRemaining;
+		this.amountNeededForNextLevel = this.game.gameManager.followersNeededForEachLevel[this.priestGroup.numPriests - 1];
+		this.followersGainedThisLevel = this.game.math.roundTo(this.amountNeededForNextLevel * percentRemaining, 0);
+		//this.totalFollowers -= followersLost;
+		// Subtract from the total population
+		//this.game.gameManager.totalPopulation -= followersLost;
+		this.combo = 0;
+		this.checkFollowerCount();
 	},
 	onFollowersGained: function(followerCount){
 		// Add a bit more followers based on the combo
-		console.log(followerCount, this.game.math.roundTo(followerCount * this.combo / 10, 0));
 		followerCount = followerCount + this.game.math.roundTo(followerCount * this.combo / 10, 0);
 		this.totalFollowers += followerCount;
 		this.game.gameManager.totalPopulation -= followerCount;
+		this.followersGainedThisLevel += followerCount;
 		this.checkFollowerCount();
 	},
-	onFollowersLost: function(followerCount){
-		this.totalFollowers -= followerCount;
+	onFailedChant: function(){
+		this.totalDefectors += this.game.gameManager.failedChantPenalty;
+		this.totalFollowers -= this.game.gameManager.failedChantPenalty;
 		// Subtract from the total population
-		this.game.gameManager.totalPopulation -= followerCount;
-		this.checkFollowerCount();
+		this.game.gameManager.totalPopulation -= this.game.gameManager.failedChantPenalty;
 		this.combo = 0;
+		this.checkFollowerCount();
 	},
 	checkFollowerCount: function(){
+		if(this.followersGainedThisLevel >= this.amountNeededForNextLevel)
+			this.priestGroup.addPriest();
+		this.levelUpProgressBar.width = (this.followersGainedThisLevel / this.amountNeededForNextLevel) * this.gaugeWidth;
+		if(this.totalDefectors >= this.game.gameManager.followerPenaltyThreshold)
+		{
+			this.totalDefectors = 0;
+			this.priestGroup.killLeader();
+		}
+		this.levelDownProgressBar.width = (this.totalDefectors / this.game.gameManager.followerPenaltyThreshold) * this.gaugeWidth;
 		if(this.totalFollowers < 0)
 			this.totalFollowers = 0;
-		if(this.game.gameManager.totalPopulation <= 0)
+		if(this.priestGroup.numPriests <= 0 || this.game.gameManager.totalPopulation <= 0)
 		{
 	    	this.game.input.keyboard.destroy();
 			this.game.state.start("Lose", true, false);
@@ -184,6 +221,7 @@ GameState.prototype = {
 			return;
 		}
 		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation;
+		/*
 		// Checks the current amount of followers and adjusts the amount of priests and the gauge.
 		for(var i = 1; i <= this.game.gameManager.followersNeededForEachLevel.length; i++)
 		{
@@ -193,6 +231,6 @@ GameState.prototype = {
 			else if(this.totalFollowers < numFollowersNeeded && this.priestGroup.numPriests > i)
 				this.priestGroup.killLeader();
 		}
-		this.followersGauge.width = (this.totalFollowers / this.game.gameManager.followersNeeded) * this.gaugeWidth;
+		*/
 	}
 }

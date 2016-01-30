@@ -14,6 +14,8 @@ GameManager = function(game){
 	this.followersNeeded = 200;
 	this.totalPopulation = 300;
 	this.followersPenalty = 2;
+	this.failedChantPenalty = 2;
+	this.followerPenaltyThreshold = 20;
 	// The followers for each level should be done programatically...
 	this.followersNeededForEachLevel = [5, 15, 35, 60, 100, 150, 200];
 };
