@@ -77,4 +77,5 @@ Runner.prototype.revive = function() {
 	this.destroyed = false;
 	this.reset(this.startX, -game.cache.getImage("runner").height / 2);
 	this.invisBox.reset(this.startX, -game.cache.getImage("runner").height / 2);
+	this.tint = game.rnd.frac() * 0xffffff;
 }
