@@ -7,21 +7,29 @@ var BGTestState = function(game){
  
 BGTestState.prototype = {
 	init: function(params){
-		this.stage.disableVisibilityChange = false; // no outside pause
+		//this.stage.disableVisibilityChange = false; // no outside pause
 	},
 	preload: function(){
+		this.load.image("bgtile", "assets/hills.png");
+		this.load.image("root", "assets/root.png");
 	},
 	create: function(){
-		this.mountain = this.add.group(this.world, "mountain");
+		var w = this.scale.width;
+		var h = this.scale.height;
+		var m = this.mountain = this.add.sprite(w / 2, h / 2, "root");
 
-		var tileWidth = this.cache.getImage('bgtile').width; // this.scale.width
-		var tileHeight = this.cache.getImage('bgtile').height; // this.scale.height
-		this.bgtile = this.add.tileSprite(0, 0, tileWidth, tileHeight, "bgtile", null, this.mountain);
+		this.bgtile = this.make.tileSprite(-w * 2, 0, w * 4, h, "bgtile");
+		m.addChild(this.bgtile);
+
+		this.input.onDown.add(function(){
+			m.rotation -= 0.05;
+		}, this);
 	},
 	update: function(){
-		this.bgtile.tilePosition.x -= this.speed;
+		this.bgtile.tilePosition.x += this.speed;
 	},
 	render: function(){
+		this.game.debug.text(this.mountain.rotation, 10, 20);
 	},
 	shutdown: function(){
 	}
