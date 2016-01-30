@@ -15,7 +15,7 @@ Runner.prototype.create = function(){
 	var game = this.game;
 	this.addChild(this.invisBox);
 	game.physics.arcade.enable(this);
-	this.body.setSize(this.width-20, this.height, 0, 0);
+	this.body.setSize(this.width-35, this.height, 0, 0);
 	this.invisBox.body.setSize(this.width+60, this.height, 0, 0);
 }
 
@@ -28,6 +28,9 @@ Runner.prototype.update = function(runSpeed, player){
 	var game = this.game;
 	if (!this.destroyed && !this.hitPlayer) {
 		this.body.velocity.x = runSpeed;
+		//Readjust buffer based on speed.
+		var buffer = 40 + Math.min(40, Math.floor(runSpeed / 15));
+		this.invisBox.body.setSize(this.width+buffer, this.height, 0, 0);
 		//Keep larger hitbox attached to runner.
 		this.invisBox.body.x = this.body.x;
 		this.invisBox.body.y = this.body.y;
