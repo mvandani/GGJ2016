@@ -35,7 +35,7 @@ Preload.prototype = {
 		// For the particles
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-		this.game.state.start("GameState");
+		this.game.state.start("MainMenu");
 	},
 	update: function(){
 	},
