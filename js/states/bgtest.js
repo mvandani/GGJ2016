@@ -11,7 +11,7 @@ BGTestState.prototype = {
 		//this.stage.disableVisibilityChange = false; // no outside pause
 	},
 	preload: function(){
-		this.load.image("ground", "assets/ground.png");
+		this.load.image("ground", "assets/lava-ground.png");
 		this.load.image("root", "assets/root-x.png");
 		this.load.image("mountains", "assets/mountains.png");
 		this.load.image("sky", "assets/sky.png");
@@ -26,6 +26,7 @@ BGTestState.prototype = {
 		var root = this.dispRoot = this.add.sprite(w / 2, h / 2, "root");
 		this.ground = this.make.tileSprite(-w * 2, 0, w * 4, h, "ground");
 		root.addChild(this.ground);
+		root.rotation = -0.45;
 
 		this.input.onDown.add(function(){
 			root.rotation -= 0.05;
