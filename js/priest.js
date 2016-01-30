@@ -1,6 +1,13 @@
 Priest = function(game, x, y, priestData){
 	// InputTime MUST be shorter than showingTime!
 	Phaser.Sprite.call(this, game, x, y, priestData.priest, 0);
+	if(priestData.priest == "priest_4")
+		this.animations.add('idle', [0,1,2,3,4,5], 7, true);
+	if(priestData.priest == "priest_3")
+		this.animations.add('idle', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], 7, true);
+	if(priestData.priest == "priest_4" || priestData.priest == "priest_3")
+		this.animations.play('idle');
+	this.priestData = priestData;
 	this.showingTime = priestData.shownTime;
 	this.inputTime = priestData.inputTime;
 	this.keys = priestData.keys;
@@ -8,6 +15,7 @@ Priest = function(game, x, y, priestData){
 	this.icons = [];
 	this.controlsShowing = false;
 	this.iconSize = 24;
+	this.track = priestData.track;
 
     var controlsHeight = this.keys.length * this.iconSize;
 	this.controlsBG = this.addChild(new Phaser.Graphics(this.game, this.width - this.iconSize, this.iconSize));
@@ -20,8 +28,6 @@ Priest = function(game, x, y, priestData){
     this.onSuccessfulInput = new Phaser.Signal();
     this.onSuccessfulChant = new Phaser.Signal();
     this.onFailedChant = new Phaser.Signal();
-
-	this.iconLookup = this.game.cache.getJSON('iconLookup');
 
 	// Create all the icons and keys to use.
 	// Text will be used for the characters.
@@ -38,19 +44,21 @@ Priest = function(game, x, y, priestData){
     this.showControlsTimer = this.game.time.create(false);
     this.showControlsTimer.loop(Phaser.Timer.SECOND * this.showingTime, this.showControls, this);
     this.showControlsTimer.start();
+    this.track.volume = 1;
 };
 
 Priest.prototype = Object.create(Phaser.Sprite.prototype);
 Priest.prototype.constructor = Priest;
 
 Priest.prototype.createIcons = function(){
+	var iconLookup = this.game.cache.getJSON('iconLookup');
 	var len = this.keys.length;
 	for(var i = 0; i < len; i++)
 	{
 		var keyCode = this.keys[i];
 		var icon = null;
 		if(keyCode == Phaser.KeyCode.UP || keyCode == Phaser.KeyCode.DOWN || keyCode == Phaser.KeyCode.LEFT || keyCode == Phaser.KeyCode.RIGHT)
-			icon = this.controlsBG.addChild(new Phaser.Sprite(this.game, 0, 0, this.iconLookup[keyCode], 0));
+			icon = this.controlsBG.addChild(new Phaser.Sprite(this.game, 0, 0, iconLookup[keyCode], 0));
 		else
 			icon = this.controlsBG.addChild(new Phaser.Text(this.game, 2, 0, String.fromCharCode(keyCode), {fontSize: 22, fontWeight: "bold", fill: "#000000"}));
 		icon.keyCode = keyCode;
@@ -66,6 +74,7 @@ Priest.prototype.update = function(){
 };
 
 Priest.prototype.destroy = function(){
+    this.track.volume = 0;
    	this.showControlsTimer.destroy();
    	this.timesUpTimer.destroy();
 	// Go out in a blaze of glory...
