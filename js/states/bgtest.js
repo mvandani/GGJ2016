@@ -1,6 +1,6 @@
 var BGTestState = function(game){
 	this.bgtile = null;
-	this.speed = 1;
+	this.speed = 20;
 };
  
 BGTestState.prototype = {
@@ -10,7 +10,8 @@ BGTestState.prototype = {
 	},
 	create: function(){
 		var game = this.game;
-		this.bgtile = game.add.tileSprite(0, 0, this.scale.width, this.scale.height, "bgtile");
+		var tileHeight = game.cache.getImage('bgtile').height; // this.scale.height
+		this.bgtile = game.add.tileSprite(0, 0, this.scale.width, tileHeight, "bgtile");
 	},
 	update: function(){
 		this.bgtile.tilePosition.x -= this.speed;
