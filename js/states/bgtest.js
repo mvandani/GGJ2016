@@ -15,6 +15,7 @@ BGTestState.prototype = {
 		this.load.image("root", "assets/root-x.png");
 		this.load.image("mountains", "assets/mountains.png");
 		this.load.image("sky", "assets/sky.png");
+		this.load.image("hill", "assets/chanter-hill.gif");
 	},
 	create: function(){
 		var w = this.scale.width;
@@ -22,6 +23,8 @@ BGTestState.prototype = {
 
 		this.add.sprite(0, 0, "sky");
 		this.mountains = this.add.tileSprite(0, h - this.cache.getImage("mountains").height, w, h, "mountains");
+		var hill = this.add.sprite(150 - this.cache.getImage("hill").width / 3, h - this.cache.getImage("hill").height * 3/5, "hill");
+		hill.scale.set(0.7, 0.7);
 
 		var root = this.dispRoot = this.add.sprite(w / 2, h / 2, "root");
 		this.ground = this.make.tileSprite(-w * 2, 0, w * 4, h, "ground");
