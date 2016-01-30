@@ -4,7 +4,7 @@ var GameState = function(game){
 GameState.prototype = {
 	/* State methods */
 	create: function(){
-		this.bg = this.game.add.sprite(0, 200, 'game_bg');
+		this.bg = this.game.add.sprite(0, 0, 'game_bg');
 		/*
 		for(var i = 0; i < 300; i++)
 		{

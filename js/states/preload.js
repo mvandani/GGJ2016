@@ -9,13 +9,11 @@ Preload.prototype = {
 		this.game.stage.backgroundColor = "0x0099ff";
 
 		// Priests
-		this.game.load.image('priest_1', 'assets/images/Priest 1.png');
-		this.game.load.image('priest_2', 'assets/images/Priest 2.png');
-		//this.game.load.image('priest_3', 'assets/images/Priest 3.png');
-		//this.game.load.image('priest_4', 'assets/images/Priest 4.png');
-		this.game.load.image('priest_5', 'assets/images/Priest 1.png');
-		this.game.load.image('priest_6', 'assets/images/Priest 1.png');
-		this.game.load.image('priest_7', 'assets/images/Priest 1.png');
+		this.game.load.image('novice', 'assets/images/priests/Novice.png');
+		this.game.load.image('monk', 'assets/images/priests/Monk.png');
+		this.game.load.image('harp_lady', 'assets/images/priests/HarpLady.png');
+		this.game.load.image('geese', 'assets/images/priests/GeesePriest.png');
+		this.game.load.image('shadow', 'assets/images/priests/Shadow.png');
 
 		this.game.load.image('up', 'assets/images/up.png');
 		this.game.load.image('down', 'assets/images/down.png');
@@ -31,8 +29,8 @@ Preload.prototype = {
 		this.game.load.json('iconLookup', 'assets/data/keyIconLookup.json');
 
 		// Spritesheets
-		this.game.load.spritesheet('priest_3', 'assets/images/Priest 3.png', 96, 128);
-		this.game.load.spritesheet('priest_4', 'assets/images/Priest 4.png', 96, 128);
+		this.game.load.spritesheet('idol', 'assets/images/priests/Idol.png', 96, 128);
+		this.game.load.spritesheet('nun', 'assets/images/priests/Nun.png', 96, 128);
 		this.game.load.spritesheet('followers', 'assets/images/Follower idles.png', 33, 93);
 
 		// Load the game audio
