@@ -1,8 +1,8 @@
 var BGTestState = function(game){
 	this.speed = 20;
 
-	this.mountain = null; // group of everything moving...
-	this.bgtile = null;
+	this.dispRoot = null; // group of everything moving...
+	this.ground = null;
 };
  
 BGTestState.prototype = {
@@ -10,26 +10,26 @@ BGTestState.prototype = {
 		//this.stage.disableVisibilityChange = false; // no outside pause
 	},
 	preload: function(){
-		this.load.image("bgtile", "assets/hills.png");
-		this.load.image("root", "assets/root.png");
+		this.load.image("ground", "assets/ground.png");
+		this.load.image("root", "assets/root-x.png");
 	},
 	create: function(){
 		var w = this.scale.width;
 		var h = this.scale.height;
-		var m = this.mountain = this.add.sprite(w / 2, h / 2, "root");
+		var m = this.dispRoot = this.add.sprite(w / 2, h / 2, "root");
 
-		this.bgtile = this.make.tileSprite(-w * 2, 0, w * 4, h, "bgtile");
-		m.addChild(this.bgtile);
+		this.ground = this.make.tileSprite(-w * 2, 0, w * 4, h, "ground");
+		m.addChild(this.ground);
 
 		this.input.onDown.add(function(){
 			m.rotation -= 0.05;
 		}, this);
 	},
 	update: function(){
-		this.bgtile.tilePosition.x += this.speed;
+		this.ground.tilePosition.x += this.speed;
 	},
 	render: function(){
-		this.game.debug.text(this.mountain.rotation, 10, 20);
+		this.game.debug.text(this.dispRoot.rotation, 10, 20);
 	},
 	shutdown: function(){
 	}
