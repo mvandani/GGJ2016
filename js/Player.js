@@ -9,7 +9,12 @@ Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 Player.prototype.create = function(){
 	var game = this.game;
-	this.run = this.animations.add('run');
+	this.run = this.animations.add('run', [0,1,2,3,4,5,6,7]);
+	var runAnim = this.run;
+	this.punchAnim = this.animations.add('punch', [8,9]);
+	this.punchAnim.onComplete.add(function(){
+		runAnim.play();
+	});
 	this.animations.play('run', 13, true);
 	game.physics.arcade.enable(this);
 	this.body.setSize(170, 200, 0, 0);
@@ -18,7 +23,10 @@ Player.prototype.create = function(){
 Player.prototype.update = function(runSpeed){
 	this.run.speed = runSpeedToFps(runSpeed);
 };
+Player.prototype.punch = function() {
+	this.animations.play('punch', 12, false);
 
+};
 var runSpeedToFps = function (runSpeed) {
 	return Math.min(25, 10 + Math.floor(runSpeed/40));
 };

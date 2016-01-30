@@ -141,6 +141,7 @@ GameState.prototype = {
 		this.newRunnerTimer();
 	},
 	tryEvade:function() {
+		this.player.punch();
 		if (this.hitButtonOn) {
 			//Stop runners that are close
 			for (var i = 0; i < this.runners.length; i++) {
