@@ -7,7 +7,7 @@ MainMenu.prototype = {
 	},
 	preload: function(){
 		var game = this.game;
-		game.load.image('player', 'assets/player.png');
+		game.load.spritesheet('player', 'assets/player.png', 174, 234, 8);
 		game.load.image('runner', 'assets/runner.png');
 		game.load.image("ground", "assets/lava-ground.png");
 		game.load.image("root", "assets/root-x.png");

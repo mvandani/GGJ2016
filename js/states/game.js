@@ -3,7 +3,7 @@ var GameState = function(game){
 	//Tells which runners are on screen
 	this.runnerMap = {}; 
 	this.runners = [];
-	this.runningSpeed = 200;
+	this.runningSpeed = 300;
 	this.hitButtonOn = false;
 	//this.speed = 5;
 
@@ -13,6 +13,10 @@ var GameState = function(game){
 	//Which index is on the left of screen currently.
 	this.offGround;
 	this.groundOffsetY = -100;
+
+	this.score = 0;
+	this.speedScoreFactor = 0.02;
+	this.MAX_SPEED = 800;
 };
  
 GameState.prototype = {
@@ -26,25 +30,28 @@ GameState.prototype = {
 		var w = this.scale.width;
 		var h = this.scale.height;
 		/*background and foreground set up*/
-		this.add.sprite(0, 0, "sky");
-		this.mountains = this.add.tileSprite(0, h - this.cache.getImage("mountains").height, w, h, "mountains");
-		var hill = this.add.sprite(150 - this.cache.getImage("hill").width / 3, h - this.cache.getImage("hill").height * 3/5, "hill");
+		this.sky = this.add.tileSprite(0, 0, w, this.cache.getImage("sky").height, "sky");
+		this.mountain = this.add.tileSprite(0, h - this.cache.getImage("mountains").height -100, w, h, "mountains");
+		var hill = this.add.sprite(150 - this.cache.getImage("hill").width / 3, h - this.cache.getImage("hill").height + 75, "hill");
 		hill.scale.set(0.7, 0.7);
 
 		var root = this.dispRoot = this.add.sprite(w - 150, h * (3/8), "root");
 		root.rotation = -0.45;
 		this.createGround();
 		this.input.onDown.add(function(){
-			root.rotation -= 0.05;
-			this.runningSpeed += 35;
+			//root.rotation -= 0.05;
+			this.runningSpeed = Math.min(this.runningSpeed + 50, this.MAX_SPEED);
 		}, this);
 
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 		/*Player and runner set up*/
 		this.player = new Player(game, 0, 0);
+		this.player.create();
+		//this.player.anchor.setTo(0.5, 0.5);
+		this.player.angle = 30;
 		//Add player
-		game.physics.arcade.enable(this.player);
 		root.addChild(this.player);
+		//this.player.rotation = 0.25;
 		//add runner (just test code)
 		for (var i = 0; i < this.numRunners; i++) {
 			this.runners.push(new Runner(game));
@@ -57,6 +64,8 @@ GameState.prototype = {
 		this.evadeKey.onDown.add(this.tryEvade, this);
 
 		this.newRunnerTimer();
+
+		this.evadeSignal = new Phaser.Signal();
 	},
 	createGround: function() {
 		var game = this.game;
@@ -75,16 +84,19 @@ GameState.prototype = {
 	},
 	newRunnerTimer: function() {
 		var game = this.game;
-		var numSec = game.rnd.integerInRange(1,4);
+		var min = (this.runningSpeed >= 600)? 0.5 : 1;
+		var max = (this.runningSpeed >= 600)? 3 : 4;
+		var numSec = game.rnd.integerInRange(1,max);
 		game.time.events.add(Phaser.Timer.SECOND * numSec, this.addRunner, this);
 	},
 	update: function(){
 		var game = this.game;
-		this.mountains.tilePosition.x += this.speed / 200;
+		this.mountain.tilePosition.x += 0.005;
+		this.sky.tilePosition.x += 0.25;
 		for (var i = 0; i < this.grounds.length; i++) {
 			this.grounds[i].body.velocity.x = this.runningSpeed;	
 		}
-		this.player.update();
+		this.player.update(this.runningSpeed);
 		//update runner(s) that are on screen
 		for (var i = 0; i < this.runners.length; i++) {
 			if (!this.runnerMap[i]) {
@@ -105,6 +117,7 @@ GameState.prototype = {
 		if ((this.grounds[this.offGround].x + (this.scale.width)) >= -2) {
 			this.swapGround();
 		}
+		this.score += Math.floor(this.runningSpeed * this.speedScoreFactor);
 	},
 	swapGround: function() {
 		var w = this.scale.width;
@@ -137,6 +150,7 @@ GameState.prototype = {
 					this.runnerMap[i] = false;
 					this.hitButton.kill();
 					this.hitButtonOn = false;
+					this.evadeSignal.dispatch("close");
 				}
 			}
 		}
@@ -146,14 +160,19 @@ GameState.prototype = {
 		this.hitButton.reset(0,0);
 		game.add.existing(this.hitButton);
 		this.hitButtonOn = true;
-
+		this.evadeSignal.dispatch("open");
 	},
 	attachRunnerToPlayer: function(runner) {
 		var game = this.game;
 		this.player.kill();
 	},
 	render: function(){
-		this.game.debug.text(this.dispRoot.rotation, 10, 20, "#000");
+		this.game.debug.text(this.score, 10, 20, "#000");
+		//this.game.debug.geom(this.player.getBounds());
+			for (var i = 0; i < this.runners.length; i++) {
+				var runner = this.runners[i];
+				//this.game.debug.geom(runner.getBounds());
+			}
 	},
 	shutdown: function(){
 	}
