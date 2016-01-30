@@ -7,11 +7,12 @@
 				font-size: 100;
 			}
 		</style>
-		<script type="text/javascript" src="js/libs/phaser.min.js"></script>
+		<script type="text/javascript" src="js/libs/phaser.js"></script>
 		<script type="text/javascript" src="js/states/preload.js"></script>
 		<script type="text/javascript" src="js/states/mainMenu.js"></script>
+		<script type="text/javascript" src="js/Player.js"></script>
+		<script type="text/javascript" src="js/Runner.js"></script>
 		<script type="text/javascript" src="js/states/game.js"></script>
-		<script type="text/javascript" src="js/states/bgtest.js"></script>
 
 		<script type="text/javascript">
 			(function(){
@@ -21,10 +22,12 @@
 				}
 
 				function create(){
-					game.state.add("BGTestState", BGTestState);
-					game.state.start("BGTestState");
+					game.state.add("Preload", Preload);
+					game.state.add("MainMenu", MainMenu);
+					game.state.add("GameState", GameState);
+					game.state.start("Preload");
 				}
-			})();
+			})();   
 		</script>
 	</head>
 	<body>

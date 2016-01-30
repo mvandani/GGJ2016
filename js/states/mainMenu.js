@@ -6,8 +6,18 @@ MainMenu.prototype = {
 	init: function(params){
 	},
 	preload: function(){
+		var game = this.game;
+		game.load.image('player', 'assets/player.png');
+		game.load.image('runner', 'assets/runner.png');
+		game.load.image("ground", "assets/lava-ground.png");
+		game.load.image("root", "assets/root-x.png");
+		game.load.image("mountains", "assets/mountains.png");
+		game.load.image("sky", "assets/sky.png");
+		game.load.image("hill", "assets/chanter-hill.gif");
 	},
 	create: function(){
+		var game = this.game;
+		game.state.start("GameState");
 	},
 	update: function(){
 	},
