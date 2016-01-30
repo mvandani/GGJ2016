@@ -76,7 +76,7 @@ GameState.prototype = {
 		this.comboFloat.alpha = 0;
 
 		this.populationText = this.game.add.text(15, 15, 'Total island population: ' + this.game.gameManager.totalPopulation, {fontSize:22});
-
+        
 	    this.gameStartTimer = this.game.time.create(true);
 	    this.gameStartTimer.add(Phaser.Timer.SECOND * 4, this.beginGame, this);
 	    this.gameStartTimer.start();
@@ -172,14 +172,11 @@ GameState.prototype = {
 			this.totalFollowers = 0;
 		if(this.game.gameManager.totalPopulation <= 0)
 		{
-	    	this.game.input.keyboard.destroy();
 			this.game.state.start("Lose", true, false);
 			return;
 		}
 		if(this.totalFollowers >= this.game.gameManager.followersNeeded)
 		{
-
-	    	this.game.input.keyboard.destroy();
 			this.game.state.start("Win", true, false);
 			return;
 		}
