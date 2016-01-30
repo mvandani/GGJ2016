@@ -4,19 +4,11 @@ PriestGroup = function(game, priestData){
 	this.maxPriests = 7;
 	this.lastPriest = null;
 
-    // Listen for the input on the keys
-    this.game.input.keyboard.addCallbacks(this, null, null, this.onKeyPress);
-
-    // Since arrow keys are not printable, we must check for those separately
-    this.interactionKeys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT });
-    this.interactionKeys.up.onDown.add(this.onDirectionKeyPress, this);
-    this.interactionKeys.down.onDown.add(this.onDirectionKeyPress, this);
-    this.interactionKeys.left.onDown.add(this.onDirectionKeyPress, this);
-    this.interactionKeys.right.onDown.add(this.onDirectionKeyPress, this);
-
-    this.gameStartTimer = this.game.time.create(true);
-    this.gameStartTimer.add(Phaser.Timer.SECOND * 4, this.beginGame, this);
-    this.gameStartTimer.start();
+	this.onPriestAdded = new Phaser.Signal();
+	this.onPriestLost = new Phaser.Signal();
+	this.onFollowersGained = new Phaser.Signal();
+	this.onFollowersLost = new Phaser.Signal();
+	this.onSuccessfulInput = new Phaser.Signal();
 }
 
 PriestGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -35,52 +27,57 @@ PriestGroup.prototype.destroy = function(){
 	Phaser.Group.prototype.destroy.call(this);
 };
 
-PriestGroup.prototype.beginGame = function(){
-	this.lastPriest = this.addPriest();
-};
-
 PriestGroup.prototype.addPriest = function(){
 	if(this.children.length == this.maxPriests - 1)
-		return this.lastPriest;
+		return;
 	// Add a new priest after a successfull input
 	// Priest(game, x, y, time, keys)
 	var pd = this.priestData[this.children.length];
-	var priest = this.add(new Priest(this.game, (this.children.length * 96) + 20, 0, pd.priest, pd.shownTime, pd.inputTime, pd.keys));
+	var priest = this.add(new Priest(this.game, (this.children.length * 96) + 20, 0, pd));
 	priest.onSuccessfulChant.add(this.onSuccessfulChant, this);
 	priest.onFailedChant.add(this.onFailedChant, this);
-	return priest;
+	priest.onSuccessfulInput.add(this.priestSuccessfulInput, this);
+	this.onPriestAdded.dispatch(priest);
+	this.lastPriest = priest;
 };
 
 PriestGroup.prototype.onSuccessfulChant = function(priest){
-	console.log("JUMP IN!");
-	// Only load up another priest if the LAST priest added is the one to make the jump in call.
-	if(this.lastPriest == priest)
-		this.lastPriest = this.addPriest();
+	this.onFollowersGained.dispatch(priest.followerCount);
 };
 
 PriestGroup.prototype.onFailedChant = function(){
-	console.log("BLOW UP!");
-	// Blow up the last priest added?
-	this.lastPriest.kill();
+	this.onFollowersLost.dispatch(20);
 	if(this.children.length == 0)
 		console.log("YOU LOOOOOOOOOOSE");
 	else // Reset the last priest to the last one in the group
 		this.lastPriest = this.children[this.children.length - 1];
 };
 
-// onDown passes the key object, so we pass the event to the main key press handler.
-PriestGroup.prototype.onDirectionKeyPress = function(key){
-	this.onKeyPress(null, key.event);
+PriestGroup.prototype.priestSuccessfulInput = function(priest){
+	this.onSuccessfulInput.dispatch(priest);
 };
-// addKeys passes the printable character key and the event. The event hold the key code so we use that.
-PriestGroup.prototype.onKeyPress = function(key, event){
-	// Ensure all keycodes passed are uppercase
-	if(key != null)
-		keyCode = key.toUpperCase().charCodeAt(0);
-	else
-		keyCode = event.keyCode;
+
+PriestGroup.prototype.killLeader = function(){
+	// Blow up the last priest added?
+	this.lastPriest.kill();
+	this.lastPriest = this.children[this.children.length - 1];
+};
+
+PriestGroup.prototype.onKeyPress = function(keyCode){
 	// Send the key code to all the priests
+	var matchingKeyFound = false;
 	this.forEach(function(priest){
-		priest.onKeyPress(keyCode);
+		if(priest.onKeyPress(keyCode))
+			matchingKeyFound = true;
 	}, this, false, event);
+	// If no priest answered with a success, remove some followers
+	if(!matchingKeyFound)
+		this.onFollowersLost.dispatch(2);
+	return matchingKeyFound;
 };
+
+Object.defineProperty(PriestGroup.prototype, "numPriests", {
+    get: function(){
+        return this.children.length;
+    }
+});

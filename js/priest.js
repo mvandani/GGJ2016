@@ -1,22 +1,23 @@
-Priest = function(game, x, y, spriteKey, showingTime, inputTime, keys){
+Priest = function(game, x, y, priestData){
 	// InputTime MUST be shorter than showingTime!
-	Phaser.Sprite.call(this, game, x, y, spriteKey, 0);
-	this.showingTime = showingTime;
-	this.inputTime = inputTime;
-	this.keys = keys;
+	Phaser.Sprite.call(this, game, x, y, priestData.priest, 0);
+	this.showingTime = priestData.shownTime;
+	this.inputTime = priestData.inputTime;
+	this.keys = priestData.keys;
+	this.followerCount = priestData.followerCount;
 	this.icons = [];
 	this.controlsShowing = false;
 	this.iconSize = 24;
 
-    var controlsHeight = keys.length * this.iconSize;
+    var controlsHeight = this.keys.length * this.iconSize;
 	this.controlsBG = this.addChild(new Phaser.Graphics(this.game, this.width - this.iconSize, this.iconSize));
-    // set a fill and line style
     this.controlsBG.beginFill(0xFFFFFF);
     this.controlsBG.lineStyle(2, 0x000000, 1);
     this.controlsBG.drawRoundedRect(0, 0, this.iconSize, controlsHeight, 4);
     this.controlsBG.endFill();
     this.controlsBG.visible = false;
 
+    this.onSuccessfulInput = new Phaser.Signal();
     this.onSuccessfulChant = new Phaser.Signal();
     this.onFailedChant = new Phaser.Signal();
 
@@ -51,7 +52,7 @@ Priest.prototype.createIcons = function(){
 		if(keyCode == Phaser.KeyCode.UP || keyCode == Phaser.KeyCode.DOWN || keyCode == Phaser.KeyCode.LEFT || keyCode == Phaser.KeyCode.RIGHT)
 			icon = this.controlsBG.addChild(new Phaser.Sprite(this.game, 0, 0, this.iconLookup[keyCode], 0));
 		else
-			icon = this.controlsBG.addChild(new Phaser.Text(this.game, 9, 0, String.fromCharCode(keyCode), {fontSize: 22, fontWeight: "bold", fill: "0x000000"}));
+			icon = this.controlsBG.addChild(new Phaser.Text(this.game, 2, 0, String.fromCharCode(keyCode), {fontSize: 22, fontWeight: "bold", fill: "#000000"}));
 		icon.keyCode = keyCode;
 		this.icons.push(icon);
 	}
@@ -114,6 +115,10 @@ Priest.prototype.keyHit = function(){
 			icon.visible = false;
 		}
 	}
+	this.onSuccessfulInput.dispatch(this);
+	// If there are no more keys to check, the chant was a success
+	if(this.checkingKeys.length == 0)
+		this.allKeysHit();
 };
 
 Priest.prototype.failedToHitKeys = function(){
@@ -130,14 +135,15 @@ Priest.prototype.allKeysHit = function(){
 // addKeys passes the printable character key and the event. The event hold the key code so we use that.
 Priest.prototype.onKeyPress = function(keyCode){
 	if(!this.controlsShowing)
-		return;
+		return false;
 	// Keys MUST be pressed in order!
 	var keyToCheck = this.checkingKeys[0];
 	if(keyCode == keyToCheck) // A match! Remove the key from the interface.
+	{
 		this.keyHit();
-	// If there are no more keys to check, the chant was a success
-	if(this.checkingKeys.length == 0)
-		this.allKeysHit();
+		return true;
+	}
+	return false;
 };
 
 Priest.prototype.kill = function(){
