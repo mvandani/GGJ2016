@@ -13,7 +13,8 @@
 		<script type="text/javascript" src="js/Player.js"></script>
 		<script type="text/javascript" src="js/Runner.js"></script>
 		<script type="text/javascript" src="js/states/game.js"></script>
-
+		<script type="text/javascript" src="js/states/timing.js"></script>
+		<script type="text/javascript" src="js/RhythmEngine.js"></script>
 		<script type="text/javascript">
 			(function(){
 				var game = new Phaser.Game(800, 600, Phaser.AUTO, "game", {preload: preload, create: create});
@@ -27,7 +28,7 @@
 					game.state.add("GameState", GameState);
 					game.state.start("Preload");
 				}
-			})();   
+			})();
 		</script>
 	</head>
 	<body>
