@@ -1,44 +1,22 @@
 var GameState = function(game){
 	// Create an array of key combinations we can use for the priests.
 	// TODO: This should be randomized.
-	this.keys = [[Phaser.KeyCode.UP],
-				[Phaser.KeyCode.DOWN],
-				[Phaser.KeyCode.LEFT],
-				[Phaser.KeyCode.RIGHT],
-				[Phaser.KeyCode.A],
-				[Phaser.KeyCode.B],
-				[Phaser.KeyCode.C],
-				[Phaser.KeyCode.D],
-				[Phaser.KeyCode.E],
-				[Phaser.KeyCode.F],
-				[Phaser.KeyCode.G],
-				[Phaser.KeyCode.H],
-				[Phaser.KeyCode.I],
-				[Phaser.KeyCode.J],
-				[Phaser.KeyCode.K],
-				[Phaser.KeyCode.L],
-				[Phaser.KeyCode.M],
-				[Phaser.KeyCode.N],
-				[Phaser.KeyCode.O],
-				[Phaser.KeyCode.P],
-				[Phaser.KeyCode.Q],
-				[Phaser.KeyCode.R],
-				[Phaser.KeyCode.S],
-				[Phaser.KeyCode.T],
-				[Phaser.KeyCode.U],
-				[Phaser.KeyCode.V],
-				[Phaser.KeyCode.W],
-				[Phaser.KeyCode.X],
-				[Phaser.KeyCode.Y],
-				[Phaser.KeyCode.Z]
+	this.priests = [{shownTime: 3, inputTime: 1, priest:"priest_1", keys: [Phaser.KeyCode.UP]},
+				{shownTime: 5, inputTime: 1, priest:"priest_2", keys: [Phaser.KeyCode.DOWN]},
+				{shownTime: 5, inputTime: 1, priest:"priest_3", keys: [Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT]},
+				{shownTime: 7, inputTime: 2, priest:"priest_4", keys: [Phaser.KeyCode.X]},
+				{shownTime: 10, inputTime: 2, priest:"priest_5", keys: [Phaser.KeyCode.W, Phaser.KeyCode.S]},
+				{shownTime: 15, inputTime: 3, priest:"priest_6", keys: [Phaser.KeyCode.Q, Phaser.KeyCode.E]},
+				{shownTime: 15, inputTime: 3, priest:"priest_7", keys: [Phaser.KeyCode.A, Phaser.KeyCode.D]}
 	];
 };
  
 GameState.prototype = {
 	/* State methods */
 	create: function(){
+		this.bg = this.game.add.sprite(0, 0, 'game_bg');
 		// The group for the priests
-		this.priestGroup = this.game.world.add(new PriestGroup(this.game, this.keys));
+		this.priestGroup = this.game.world.add(new PriestGroup(this.game, this.priests));
 		// The group for the party goers
 		this.worshipperGroup = this.game.world.add(new WorshipperGroup(this.game));
 		this.priestGroup.x = 70;
