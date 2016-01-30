@@ -9,6 +9,7 @@ Preload.prototype = {
 		// Use the script loader to avoid bloating the index with includes
 		//this.game.load.script('customGroup.js', 'js/customGroup.js');
 		//this.game.load.script('customSprite.js', 'js/customSprite.js');
+        this.game.state.start("MainMenu");
 	},
 	create: function(){
 	},
