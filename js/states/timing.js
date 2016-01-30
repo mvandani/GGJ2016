@@ -1,43 +1,34 @@
 var Timing = function(game){
 	this.cursors;
 
-	this.speed;
+	this.speed = 50;
 	this.text;
 
 	this.bar;
 
-	this.stepTimer;
-
-	this.stepLength;
-	this.stepGrace;
-
-	this.keyWasHit;
-	this.lastKey;
-
+	this.rhythmEngine;
 };
 
 Timing.prototype = {
 
 	init: function(params){
-		this.speed = 50;
-
-		this.stepLength = 1000;
-		this.stepGrace= 200;
-		this.keyWasHit = false;
 	},
 
 	preload: function(){
 	},
 
 	create: function(){
+
+
+		var stepTimer = this.game.time.create(false);
+		this.rhythmEngine = new RhythmEngine(stepTimer, 10000, 2000);
+		this.rhythmEngine.onHit.add(this.winStep, this);
+		this.rhythmEngine.onMiss.add(this.failStep, this);
+
+
 		this.cursors = this.game.input.keyboard.createCursorKeys();
-		this.cursors.left.onDown.add(this.step, this);
-		this.cursors.right.onDown.add(this.step, this);
-
-
-		//TIMER
-		this.stepTimer = this.game.time.create(false);
-		this.stepTimer.loop(this.stepLength, this.endTimer, this);
+		this.cursors.left.onDown.add(this.rhythmEngine.step, this.rhythmEngine);
+		this.cursors.right.onDown.add(this.rhythmEngine.step, this.rhythmEngine);
 
 		//TEXT
 		var style = { font: "19px Arial", fill: "#BB9900", align: "center" };
@@ -45,22 +36,19 @@ Timing.prototype = {
 		this.text.addColor("#FFFFFF", 3);
 
 		this.bar = this.game.add.text(5,25, "", style);
-
-		this.stepTimer.start();
-		this.key = this.cursors.left;
 	},
 
 
 	update: function(){
 		this.text.text = "" + this.speed + " woodles per bamboodle!";
 		this.bar.clearColors();
-		var s = Math.floor((this.stepTimer.ms/(this.stepLength)) * 10) % 10;
+		var s = Math.floor((this.rhythmEngine.getMs()/this.rhythmEngine.timerLength) * 10) % 10;
 
 
-		var delta = this.stepTimer.ms%this.stepLength - (this.stepLength - this.stepGrace);
+		var delta = this.rhythmEngine.getDelta();
 
 		var color = "#FF3300";
-		if(Math.abs(delta) < this.stepGrace)
+		if(Math.abs(delta) < this.rhythmEngine.grace)
 			color = "#77cc33";
 
 		this.bar.addColor(color,0);
@@ -69,50 +57,15 @@ Timing.prototype = {
 	},
 
 
-	failStep: function(){
+	failStep: function(e){
 		this.speed -= 1;
 		this.text.addColor("#FF3300", 0);
 		this.text.addColor("#FFFFFF", 3);
 	},
 
-	winStep: function(){
+	winStep: function(e){
 		this.speed += 1;
 		this.text.addColor("#77cc33", 0);
 		this.text.addColor("#FFFFFF", 3);
 	},
-
-
-	step: function(e){
-		var key = e.keyCode;
-		var ms = this.stepTimer.ms;
-		var failed = false;
-
-		//time in beat shifted by stepGrace
-		var delta = ms%this.stepLength - (this.stepLength - this.stepGrace);
-
-		//hit same key or wrong time
-		if(this.keyHit || key == this.lastKey || Math.abs(delta) > this.stepGrace){
-			this.failStep();
-			failed = true;
-		}
-		else{
-			this.winStep();
-		}
-
-		this._keyToHit = this.lastKey;
-		this.keyHit = true;
-
-		this.lastKey = null;
-		if(!failed)
-			this.lastKey = key;
-	},
-
-
-
-	endTimer: function(){
-		if(!this.keyHit){
-			this.failStep();
-		}
-		this.keyHit = false;
-	}
 }
