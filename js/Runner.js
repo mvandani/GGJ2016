@@ -17,6 +17,8 @@ Runner.prototype.create = function(){
 	game.physics.arcade.enable(this);
 	this.body.setSize(this.width-35, this.height, 0, 0);
 	this.invisBox.body.setSize(this.width+60, this.height, 0, 0);
+	this.run = this.animations.add('run');
+	this.animations.play('run', 6, true);
 }
 
 Runner.prototype.addToGame = function(dispRoot) {
@@ -27,7 +29,7 @@ Runner.prototype.addToGame = function(dispRoot) {
 Runner.prototype.update = function(runSpeed, player){
 	var game = this.game;
 	if (!this.destroyed && !this.hitPlayer) {
-		this.body.velocity.x = runSpeed;
+		this.body.velocity.x = runSpeed + 50;
 		//Readjust buffer based on speed.
 		var buffer = 40 + Math.min(40, Math.floor(runSpeed / 15));
 		this.invisBox.body.setSize(this.width+buffer, this.height, 0, 0);
