@@ -1,7 +1,5 @@
-PriestGroup = function(game, priestData){
+PriestGroup = function(game){
 	Phaser.Group.call(this, game);
-	this.priestData = priestData;
-	this.maxPriests = 7;
 	this.lastPriest = null;
 
 	this.onPriestAdded = new Phaser.Signal();
@@ -19,20 +17,16 @@ PriestGroup.prototype.update = function(){
 };
 
 PriestGroup.prototype.destroy = function(){
-	this.interactionKeys.up.onDown.remove(this.onDirectionKeyPress, this);
-    this.interactionKeys.down.onDown.remove(this.onDirectionKeyPress, this);
-    this.interactionKeys.left.onDown.remove(this.onDirectionKeyPress, this);
-    this.interactionKeys.right.onDown.remove(this.onDirectionKeyPress, this);
 	// Go out in a blaze of glory...
 	Phaser.Group.prototype.destroy.call(this);
 };
 
 PriestGroup.prototype.addPriest = function(){
-	if(this.children.length == this.maxPriests - 1)
+	if(this.children.length == this.game.gameManager.maxPriests)
 		return;
 	// Add a new priest after a successfull input
 	// Priest(game, x, y, time, keys)
-	var pd = this.priestData[this.children.length];
+	var pd = this.game.gameManager.priests[this.children.length];
 	var priest = this.add(new Priest(this.game, (this.children.length * 96) + 20, 0, pd));
 	priest.onSuccessfulChant.add(this.onSuccessfulChant, this);
 	priest.onFailedChant.add(this.onFailedChant, this);
@@ -72,7 +66,7 @@ PriestGroup.prototype.onKeyPress = function(keyCode){
 	}, this, false, event);
 	// If no priest answered with a success, remove some followers
 	if(!matchingKeyFound)
-		this.onFollowersLost.dispatch(2);
+		this.onFollowersLost.dispatch(this.game.gameManager.followersPenalty);
 	return matchingKeyFound;
 };
 
