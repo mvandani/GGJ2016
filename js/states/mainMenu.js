@@ -8,6 +8,7 @@ MainMenu.prototype = {
 	preload: function(){
 		var game = this.game;
 		game.load.spritesheet('player', 'assets/player.png', 174, 234, 10);
+		game.load.spritesheet('player-drag', 'assets/player-drag.png', 317, 212, 3);
 		game.load.spritesheet('runner', 'assets/runner.png', 174, 234, 3);
 		game.load.image("ground", "assets/lava-ground.png");
 		game.load.image("root-x", "assets/root-x.png");
@@ -16,6 +17,7 @@ MainMenu.prototype = {
 		game.load.image("sky", "assets/sky.png");
 		game.load.image("hill", "assets/hill.png");
 		game.load.image("menu-bg", "assets/mainmenu.jpg");
+		game.load.image("ending-bg", "assets/ending.jpg");
 		game.load.spritesheet("priests", "assets/priests.png", 267, 200, 2);
 		game.load.spritesheet('button', 'assets/buttons/button_sprite_sheet.png', 193, 71);
 	},

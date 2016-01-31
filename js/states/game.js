@@ -23,9 +23,13 @@ GameState.prototype = {
 	preload: function(){
 	},
 	create: function(){
+		this.score = 0;
+		this.speedScoreFactor = 0.02;
+
 		var game = this.game;
 		var w = this.scale.width;
 		var h = this.scale.height;
+		game.physics.startSystem(Phaser.Physics.ARCADE);
 
 		// Scenery
 		this.sky = this.add.tileSprite(0, 0, w, this.cache.getImage("sky").height, "sky");
@@ -49,13 +53,19 @@ GameState.prototype = {
 			this.runningSpeed = Math.min(this.runningSpeed + 50, this.MAX_SPEED);
 		}, this);
 
-		game.physics.startSystem(Phaser.Physics.ARCADE);
-
 		// Player
 		this.player = new Player(game, 0, 0);
 		this.player.create();
 		this.player.angle = 30;
 		root.addChild(this.player);
+
+		// Dead player
+		var deadPlayerSize = {width: 317, height: 212};
+		this.deadPlayer = this.add.sprite(-deadPlayerSize.width / 2, -deadPlayerSize.height / 2, "player-drag");
+		this.deadPlayer.animations.add("run", [0, 1, 2, 1]);
+		this.deadPlayer.animations.play("run", 4, true);
+		this.deadPlayer.visible = false;
+		root.addChild(this.deadPlayer);
 
 		//add runner (just test code)
 		for (var i = 0; i < this.numRunners; i++) {
@@ -102,14 +112,18 @@ GameState.prototype = {
 		this.mountain.tilePosition.x += 0.005;
 		this.sky.tilePosition.x += 0.25;
 		for (var i = 0; i < this.grounds.length; i++) {
-			this.grounds[i].body.velocity.x = this.runningSpeed;
+			var body = this.grounds[i].body;
+			if (body == null) {
+				continue;
+			}
+			body.velocity.x = this.runningSpeed;
 		}
 		this.player.update(this.runningSpeed);
 		//update runner(s) that are on screen
 		for (var i = 0; i < this.runners.length; i++) {
 			var runner = this.runners[i];
 			runner.update(this.runningSpeed, this.player);
-			if (!runner.running) {
+			if (!runner.exists || !runner.running) {
 				continue;
 			}
 			if (runner.approached()) {
@@ -131,10 +145,12 @@ GameState.prototype = {
 		var h = this.scale.height;
 		if (this.offGround == 0) {
 			this.offGround = 1;
-			this.grounds[1].reset(-w*3, this.groundOffsetY);
 		} else {
 			this.offGround = 0;
-			this.grounds[0].reset(-w*3, this.groundOffsetY);
+		}
+		var g = this.grounds[this.offGround];
+		if (g.exists) {
+			g.reset(-w*3, this.groundOffsetY);
 		}
 	},
 	addRunner: function() {
@@ -171,8 +187,15 @@ GameState.prototype = {
 		this.evadeSignal.dispatch("open");
 	},
 	attachRunnerToPlayer: function(runner) {
-		var game = this.game;
 		this.player.kill();
+		runner.kill();
+		this.deadPlayer.visible = true;
+
+		var timer = this.game.time.create(true);
+		timer.add(3000, function(){
+			this.game.state.start("Ending");
+		}, this);
+		timer.start();
 	},
 	render: function(){
 		this.game.debug.text(this.score, 10, 20, "#000");
