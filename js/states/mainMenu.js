@@ -89,6 +89,8 @@ MainMenu.prototype = {
 	render: function(){
 	},
 	shutdown: function(){
+        this.titleCardSprite.destroy();
+        this.tf.destroy();
 	},
     enterHandler: function() {
         var test = "state was " + this.menuState;
