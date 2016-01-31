@@ -51,9 +51,6 @@ GameOver.prototype = {
 		gameOverTimer.add(Phaser.Timer.SECOND * 2, this.showPerformancePrompt, this);
 		gameOverTimer.start();
 
-
-		console.log(this.game.gameManager.totalDefectors);
-
 		this.worshipperText = this.game.add.text(this.game.world.centerX / 2, 140, this.game.gameManager.totalFollowers + " True worshippers", {fontSize: 16, fill: "#FFFFFF"});
 		this.worshipperText.anchor.setTo(0.5, 0.5);
 		this.worshipperText.visible = false;
@@ -70,69 +67,30 @@ GameOver.prototype = {
 		this.rotateScale = false;
 		this.stepsRemaining = 0;
 
-		this.fulcrum = this.game.add.sprite(this.scaleXPos, this.scaleYPos, 'scale_fulcrum');
+		this.scaleGroup = this.game.add.group();
+		this.scaleGroup.enableBody = true;
+		this.scaleGroup.y = 600;
+		this.fulcrum = this.scaleGroup.create(this.scaleXPos, this.scaleYPos, 'scale_fulcrum');
 		this.fulcrum.anchor.setTo(0.5, 0.5);
-		// The beam group has three objects, the beam sprite and two empty sprite objects represnting joints for the platforms.
-		this.beamGroup = this.game.add.group();
-		this.beamGroup.x = this.scaleXPos;
-		this.beamGroup.y = this.scaleYPos + (-this.fulcrum.height / 2);
-		this.beamGroup.angle = 0;
-		this.beam = this.beamGroup.create(0, 0, 'scale_beam');
+		this.beam = this.scaleGroup.create(this.scaleXPos, this.scaleYPos + (-this.fulcrum.height / 2), 'scale_beam');
 		this.beam.anchor.setTo(0.5, 0.5);
-		/*
-		this.leftJoint = this.beamGroup.create(-this.beam.width / 2, 0);
-		this.leftJoint.anchor.setTo(0.5, 0.5);
-		this.rightJoint = this.beamGroup.create(this.beam.width / 2, 0);
-		this.rightJoint.anchor.setTo(0.5, 0.5);
-		*/
 
 		// The platforms will follow the two points on the beam group
-		/*
-		this.leftPlatformGroup = this.game.add.group();
-		this.leftPlatformGroup.enableBody = true;
-		*/
-		this.leftPlatform = this.game.add.sprite((this.beamGroup.x - this.rotSpeed) + 6, this.beamGroup.y - 3, 'scale_platform');
+		this.leftPlatform = this.scaleGroup.create((this.beam.x - this.rotSpeed) + 6, this.beam.y - 3, 'scale_platform');
 		this.leftPlatform.anchor.setTo(0.5, 0.5);
 	    this.game.physics.arcade.enable(this.leftPlatform);
 	    this.leftPlatform.body.immovable = true;
 	    this.leftPlatform.body.setSize(192, 6, 0, 0);
 	   	this.leftPlatform.body.reset(this.leftPlatform.x, this.leftPlatform.y);
-	   	/*
-	   	var leftBound = this.leftPlatformGroup.create(-leftPlatform.width / 2, 0);
-	   	leftBound.anchor.setTo(0.5, 0.5);
-	    leftBound.body.immovable = true;
-	    leftBound.body.setSize(6, 64, 0, 0);
-	   	leftBound.body.reset(leftBound.x, leftBound.y);
-	   	var rightBound = this.leftPlatformGroup.create(leftPlatform.width / 2, 0);
-	   	rightBound.anchor.setTo(0.5, 0.5);
-	    rightBound.body.immovable = true;
-	    rightBound.body.setSize(6, 64, 0, 0);
-	   	rightBound.body.reset(rightBound.x, rightBound.y);
-	   	*/
 
-/*
-	   	this.rightPlatformGroup = this.game.add.group();
-		this.rightPlatformGroup.enableBody = true;
-		*/
-		this.rightPlatform = this.game.add.sprite((this.beamGroup.x + this.rotSpeed) - 8, this.beamGroup.y - 3, 'scale_platform');
+		this.rightPlatform = this.scaleGroup.create((this.beam.x + this.rotSpeed) - 8, this.beam.y - 3, 'scale_platform');
 	    this.game.physics.arcade.enable(this.rightPlatform);
 		this.rightPlatform.anchor.setTo(0.5, 0.5);
 	    this.rightPlatform.body.immovable = true;
 	    this.rightPlatform.body.setSize(192, 6, 0, 0);
 	   	this.rightPlatform.body.reset(this.rightPlatform.x, this.rightPlatform.y);
-	   	/*
-	   	var leftBound = this.rightPlatformGroup.create(-rightPlatform.width / 2, 0);
-	   	leftBound.anchor.setTo(0.5, 0.5);
-	    leftBound.body.immovable = true;
-	    leftBound.body.setSize(6, 64, 0, 0);
-	   	leftBound.body.reset(leftBound.x, leftBound.y);
-	   	var rightBound = this.rightPlatformGroup.create(rightPlatform.width / 2, 0);
-	   	rightBound.anchor.setTo(0.5, 0.5);
-	    rightBound.body.immovable = true;
-	    rightBound.body.setSize(6, 64, 0, 0);
-	   	rightBound.body.reset(rightBound.x, rightBound.y);
-	   	*/
-		//this.hideScale();
+
+		this.hideScale();
 
 		// Create all the worshipper and defector sprites to throw on the scales
 		// Use emitters to spawn them in over time, and the collison detection will still work!
@@ -171,6 +129,9 @@ GameOver.prototype = {
 	   		particle.body.friction.x = 0;
    			particle.body.blocked.down = true;
 		});
+
+        this.gameOverMusic = this.game.add.audio('game_over', 1, true);
+        this.gameOverMusic.play();
 	},
 	update: function(){
     	this.game.physics.arcade.collide([this.leftPlatform, this.rightPlatform], this.worshipperEmitter);
@@ -184,13 +145,13 @@ GameOver.prototype = {
 		if(!this.rotateScale)
 			return;
 		// Rotation will change based on the performance of the player
-		var newAngle = this.beamGroup.angle + (1 / this.beamRotationFactor);
+		var newAngle = this.beam.angle + (1 / this.beamRotationFactor);
 		// If the difference remainiing to get to the angle is negative, stop
 		if(this.beamAngle < 0)
 		{
 			if(newAngle - this.beamAngle < 0)
 				return;
-			this.beamGroup.angle -= (1 / this.beamRotationFactor);
+			this.beam.angle -= (1 / this.beamRotationFactor);
 			this.rotAngle -= (1 / this.beamRotationFactor);
 			// Move the platforms to the joints
 			this.game.physics.arcade.velocityFromAngle(this.rotAngle - 270, this.rotSpeed / this.beamRotationFactor, this.leftPlatform.body.velocity);
@@ -200,7 +161,7 @@ GameOver.prototype = {
 		{
 			if(this.beamAngle - newAngle < 0)
 				return;
-			this.beamGroup.angle += (1 / this.beamRotationFactor);
+			this.beam.angle += (1 / this.beamRotationFactor);
 			this.rotAngle += (1 / this.beamRotationFactor);
 			// Move the platforms to the joints
 			this.game.physics.arcade.velocityFromAngle(this.rotAngle + 270, this.rotSpeed / this.beamRotationFactor, this.leftPlatform.body.velocity);
@@ -224,21 +185,7 @@ GameOver.prototype = {
 	showPerformancePrompt: function(){
 		var gameOverText = this.game.add.text(this.game.world.centerX, 60, "Your performance... ", {fontSize: 22, fill: "#FFFFFF"});
 		gameOverText.anchor.setTo(0.5, 0.5);
-		this.worshipperText.visible = true;
-		this.defectorText.visible = true;
 		this.showScale();
-		if(this.game.gameManager.totalFollowers > 0)
-	    	this.worshipperEmitter.start(false, 0, 50);
-		if(this.game.gameManager.totalDefectors > 0)
-	    	this.defectorEmitter.start(false, 0, 50);
-		// Set the beam anlge based on the performance
-		this.beamAngle = (this.game.gameManager.totalDefectors - this.game.gameManager.totalFollowers) * (30 / (this.game.gameManager.totalDefectors + this.game.gameManager.totalFollowers));
-		var moveScaleTimer = this.game.time.create(true);
-		moveScaleTimer.add(Phaser.Timer.SECOND * 3, this.moveScale, this);
-		moveScaleTimer.start();
-		var gameOverTimer = this.game.time.create(true);
-		gameOverTimer.add(Phaser.Timer.SECOND * 7, this.showPerformance, this);
-		gameOverTimer.start();
 	},
 	showPerformance: function(){
 		var performanceText = this.game.add.text(this.game.world.centerX, 100, this.performance, {fontSize: 22, fill: "#FFFFFF"});
@@ -250,16 +197,30 @@ GameOver.prototype = {
 		this.rotateScale = true;
 	},
 	showScale: function(){
-		this.fulcrum.visible = true;
-		this.beamGroup.visible = true;
-		this.leftPlatform.visible = true;
-		this.rightPlatform.visible = true;
+		this.scaleGroup.visible = true;
+		var entranceTween = this.game.add.tween(this.scaleGroup).to({y:-25}, 1500, Phaser.Easing.Linear.None, true);
+		entranceTween.onComplete.add(function() {
+			var bounceTween = this.game.add.tween(this.scaleGroup).to({y:0}, 1000, Phaser.Easing.Bounce.Out, true, 0);
+			bounceTween.onComplete.add(function(){
+				this.worshipperText.visible = true;
+				this.defectorText.visible = true;
+				if(this.game.gameManager.totalFollowers > 0)
+			    	this.worshipperEmitter.start(false, 0, 50);
+				if(this.game.gameManager.totalDefectors > 0)
+			    	this.defectorEmitter.start(false, 0, 50);
+				// Set the beam anlge based on the performance
+				this.beamAngle = (this.game.gameManager.totalDefectors - this.game.gameManager.totalFollowers) * (30 / (this.game.gameManager.totalDefectors + this.game.gameManager.totalFollowers));
+				var moveScaleTimer = this.game.time.create(true);
+				moveScaleTimer.add(Phaser.Timer.SECOND * 3, this.moveScale, this);
+				moveScaleTimer.start();
+				var gameOverTimer = this.game.time.create(true);
+				gameOverTimer.add(Phaser.Timer.SECOND * 7, this.showPerformance, this);
+				gameOverTimer.start();
+			}, this);
+		}, this);	
 	},
 	hideScale: function(){
-		this.fulcrum.visible = false;
-		this.beamGroup.visible = false;
-		this.leftPlatform.visible = false;
-		this.rightPlatform.visible = false;
+		this.scaleGroup.visible = false;
 	},
     enterHandler: function(){
         this.game.gameManager.reset();
