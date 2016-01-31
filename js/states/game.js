@@ -159,7 +159,9 @@ GameState.prototype = {
 		if ((this.grounds[this.offGround].x + (this.scale.width)) >= -2) {
 			this.swapGround();
 		}
-		this.score += Math.floor(this.runningSpeed * this.speedScoreFactor);
+		if (!this.deadPlayer.visible) {
+			this.score += Math.floor(this.runningSpeed * this.speedScoreFactor);
+		}
 
 		// Rhythm
 		this.keyPair = this.rhythmEngine.getPair();
@@ -216,9 +218,12 @@ GameState.prototype = {
 		runner.kill();
 		this.deadPlayer.visible = true;
 
+		var stats = {
+			score: this.score,
+		};
 		var timer = this.game.time.create(true);
 		timer.add(3000, function(){
-			this.game.state.start("Ending");
+			this.game.state.start("Ending", true, false, stats);
 		}, this);
 		timer.start();
 	},

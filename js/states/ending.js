@@ -1,8 +1,10 @@
 var Ending = function(game){
+	this.params = null;
 };
 
 Ending.prototype = {
 	init: function(params){
+		this.params = params;
 	},
 	preload: function(){
 	},
@@ -24,6 +26,7 @@ Ending.prototype = {
 	update: function(){
 	},
 	render: function(){
+		this.game.debug.text(this.params.score, 10, 20, "#000");
 	},
 	shutdown: function(){
 	}
