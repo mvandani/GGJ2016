@@ -82,7 +82,7 @@ Priest.prototype.updateIcons = function(){
 		if(keyCode == Phaser.KeyCode.UP || keyCode == Phaser.KeyCode.DOWN || keyCode == Phaser.KeyCode.LEFT || keyCode == Phaser.KeyCode.RIGHT)
 			icon = this.controlsBG.addChild(new Phaser.Sprite(this.game, 0, 0, this.iconLookup[keyCode], 0));
 		else
-			icon = this.controlsBG.addChild(new Phaser.Text(this.game, 2, 0, String.fromCharCode(keyCode), {fontSize: 22, fontWeight: "bold", fill: "#000000"}));
+			icon = this.controlsBG.addChild(new Phaser.Text(this.game, 2, 0, String.fromCharCode(keyCode), {font: 'Consolas', fontSize: 22, fontWeight: "bold", fill: "#000000"}));
 		icon.keyCode = keyCode;
 		this.icons.push(icon);
 	}

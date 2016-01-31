@@ -14,9 +14,9 @@ var graphicAssets = {
 };
 
 var fontAssets = {
-    menuFontStyle:{font: 'bold 40px Arial', fill: '#000000', align: 'center'},
-    instructionsFontStyle:{font: 'bold 35px Arial', fill: '#880015', backgroundColor: '#BBBBBB', align: 'center'},
-    creditsFontStyle:{font: 'bold 40px Arial', fill: '#880015', backgroundColor: '#BBBBBB', align: 'center'},
+    menuFontStyle:{font: 'bold 35px Consolas', fill: '#000000', align: 'center'},
+    instructionsFontStyle:{font: 'bold 35px Consolas', fill: '#880015', backgroundColor: '#BBBBBB', align: 'center'},
+    creditsFontStyle:{font: 'bold 35px Consolas', fill: '#880015', backgroundColor: '#BBBBBB', align: 'center'},
 };
  
 MainMenu.prototype = {
@@ -113,7 +113,7 @@ MainMenu.prototype = {
             this.tf.destroy();
         var text = '';
         var align = 'left';
-        var x = 50;
+        var x = 15;
         var y = 50;
         var anchorX = 0;
         var anchorY = 0;
