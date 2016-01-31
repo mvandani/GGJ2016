@@ -21,6 +21,9 @@ Preload.prototype = {
 		this.game.load.image('scale_platform', 'assets/images/Scale platform.png');
 
 		// Backgrounds
+		this.game.load.image('cloud1', 'assets/images/Cloud 1.png');
+		this.game.load.image('cloud2', 'assets/images/Cloud 2.png');
+		this.game.load.image('cloud3', 'assets/images/Cloud 3.png');
 		this.game.load.image('game_bg', 'assets/images/Background.png');
 		this.game.load.image('volcano', 'assets/images/Volcano.png');
 
@@ -38,6 +41,7 @@ Preload.prototype = {
 		this.game.load.spritesheet('novice', 'assets/images/priests/Novice.png', 96, 128);
 		this.game.load.spritesheet('shadow', 'assets/images/priests/Shadow.png', 96, 128);
 		this.game.load.spritesheet('followers', 'assets/images/follower.png', 36, 93);
+		this.game.load.spritesheet('smoke', 'assets/images/Smoke.png', 96, 96);
 
 		// Load the game audio
     	this.game.load.audio('priest', 'assets/sound/music/Priest.mp3');

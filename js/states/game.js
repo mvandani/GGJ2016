@@ -5,7 +5,21 @@ GameState.prototype = {
 	/* State methods */
 	create: function(){
 		this.game.bg = this.game.add.sprite(0, 0, 'game_bg');
+        this.game.clouds = new CloudGroup(this.game);
 		this.bg = this.game.add.sprite(0, 0, 'volcano');
+		//this.game.add.tween(this.bg).to({alpha:.5}, 1500, Phaser.Easing.Bounce.In, true, 0);
+
+		this.smoke = this.game.add.sprite(0, 0, 'smoke');
+        
+        this.game.followerNoiseEnabled = true;
+		
+		this.smoke.animations.add('smokey', [0,1,2,3,4,5], 6, true);
+    	this.smoke.animations.play('smokey');
+    	this.game.add.tween(this.smoke).to({alpha:.5}, 2000, Phaser.Easing.Circular.InOut, true, 0, -1).yoyo(true,-1);
+    	this.smoke.x = 165;
+    	this.smoke.y = -28;
+    	this.smoke.scale.y = 1.5;
+
         var initialPopulation = 300;
         this.followers = new Array(300);
 		for(var i = 0; i < initialPopulation; i++)
@@ -37,8 +51,6 @@ GameState.prototype = {
 		this.priestGroup.onFailedInput.add(this.onFailedInput, this);
 		this.priestGroup.x = 70;
 		this.priestGroup.y = this.game.world.height - 180;
-		// The group for the party goers
-		this.worshipperGroup = this.game.world.add(new WorshipperGroup(this.game));
 		this.lastSuccessfulPriest = null;
 
 		this.amountNeededForNextLevel = 0;
@@ -46,31 +58,38 @@ GameState.prototype = {
 		this.defectorsGainedLocally = 0;
 
 		// Follower gauge
-		this.gaugeWidth = 512;
-		this.gaugeX = (this.game.world.width / 2) - (this.gaugeWidth / 2);
+		this.gaugeWidth = 625;
+		this.gaugeX = 10; //(this.game.world.width / 2) - (this.gaugeWidth / 2);
+		this.gaugeH = 16;
+
+		var topGaugeY = this.game.world.height - 40;
+		var bottomGaugeY = topGaugeY + this.gaugeH;
 
 		//BG for the bars
-	    this.progressBarBG = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
-	    this.progressBarBG.beginFill(0xFFFFFF);
-	    this.progressBarBG.drawRect(0, 0, this.gaugeWidth, 32);
+	    this.progressBarBG = this.game.add.graphics(this.gaugeX, topGaugeY);
+	    this.progressBarBG.beginFill(0xcccccc);
+	    this.progressBarBG.drawRect(0, 0, this.gaugeWidth, this.gaugeH * 2);
 	    this.progressBarBG.endFill();
 	    // Top "good" bar
-	    this.levelUpProgressBar = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
+	    this.levelUpProgressBar = this.game.add.graphics(this.gaugeX, topGaugeY);
 	    this.levelUpProgressBar.beginFill(0x00FF00);
-	    this.levelUpProgressBar.drawRect(0, 0, 1, 20);
+	    this.levelUpProgressBar.drawRect(0, 0, 1, this.gaugeH);
 	    this.levelUpProgressBar.endFill();
 	    // Bottom "bad" bar
-	    this.levelDownProgressBar = this.game.add.graphics(this.gaugeX + this.gaugeWidth, this.game.world.height - 3);
+	    this.levelDownProgressBar = this.game.add.graphics(this.gaugeX, bottomGaugeY);
 	    this.levelDownProgressBar.beginFill(0xFF0000);
-	    this.levelDownProgressBar.drawRect(0, 0, 1, 12);
+	    this.levelDownProgressBar.drawRect(0, 0, 1, this.gaugeH);
 	    this.levelDownProgressBar.endFill();
-	    this.levelDownProgressBar.angle = 180;
+	    //this.levelDownProgressBar.angle = 180;
 		// Outlines for both bars
-		this.followersGaugeOutline = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
+		this.followersGaugeOutline = this.game.add.graphics(this.gaugeX, topGaugeY);
 	    this.followersGaugeOutline.lineStyle(2, 0x000000, 1);
-	    this.followersGaugeOutline.drawRect(0, 0, this.gaugeWidth, 32);
-	    this.followersGaugeOutline.moveTo(0, 20);
-	    this.followersGaugeOutline.lineTo(this.gaugeWidth, 20);
+	    this.followersGaugeOutline.drawRect(0, 0, this.gaugeWidth, this.gaugeH * 2);
+	    this.followersGaugeOutline.moveTo(0, this.gaugeH);
+	    this.followersGaugeOutline.lineTo(this.gaugeWidth, this.gaugeH);
+
+	    this.comboText = this.game.add.text(this.gaugeX + this.gaugeWidth - 60, topGaugeY, 'Priest up!', {fontSize: 12, fill: "#000000"});
+	    this.comboText = this.game.add.text(this.gaugeX + this.gaugeWidth - 85, bottomGaugeY, 'Priest down :(', {fontSize: 12, fill: "#000000"});
 
 	    // Audio
 	    this.levelUp = this.game.add.audio('level_up');
@@ -93,7 +112,7 @@ GameState.prototype = {
 	update: function(){
 	},
 	render: function(){
-		this.game.debug.text("Time: " + (this.game.time.now - this.elapsedSinceTime), 32, this.game.world.height - 32);
+		//this.game.debug.text("Time: " + (this.game.time.now - this.elapsedSinceTime), 32, this.game.world.height - 32);
 	},
 	shutdown: function(){
 		this.priestGroup.onPriestAdded.remove(this.onPriestAdded, this);

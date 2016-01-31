@@ -28,6 +28,40 @@ MainMenu.prototype = {
         this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         this.enterKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
         this.enterKey.onDown.add(this.enterHandler, this);
+
+        this.priest = this.add.audio('priest');
+        this.conga = this.add.audio('conga');
+        this.eGuitar = this.add.audio('e_guitar');
+        this.trumpet = this.add.audio('trumpet');
+        this.aGuitar = this.add.audio('a_guitar');
+        this.sax = this.add.audio('sax');
+        this.drums = this.add.audio('drums');
+
+        switch (Math.floor(Math.random() * 7))
+        {
+            case 0:
+                this.priest.play("", 0);
+                break;
+            case 1:
+                this.conga.play("", 0);
+                break;
+            case 2:
+                this.eGuitar.play("", 0);
+                break;
+            case 3:
+                this.trumpet.play("", 0);
+                break;
+            case 4:
+                this.aGuitar.play("", 0);
+                break;
+            case 5:
+                this.sax.play("", 0);
+                break;
+            case 6:
+                this.drums.play("", 0);
+                break;
+        }
+
         this.menuItems = [
             "Play",
             "Instructions",
@@ -53,6 +87,14 @@ MainMenu.prototype = {
         if (this.menuState == "Main") {
             if (this.selected == 0){
                 this.game.state.start("GameState");
+                // stop the music
+                this.priest.destroy();
+                this.conga.destroy();
+                this.eGuitar.destroy();
+                this.trumpet.destroy();
+                this.aGuitar.destroy();
+                this.sax.destroy();
+                this.drums.destroy();
             } else if (this.selected == 1) {
                 this.menuState = "Instructions";
             } else {
@@ -84,7 +126,7 @@ MainMenu.prototype = {
             }
             x = 500;
         } else if (this.menuState == "Instructions") {
-            text += 'Help the priests perform the __ ritual!\nPress the keys when they light up to\nget the worshippers to make a sacrifice.\nTry to get a rhythm going!';
+            text += 'Help the priests perform their rituals!\nPress the keys when they light up to\nget the worshippers to make a sacrifice.\nTry to get a rhythm going!';
             y = 300;
             font = fontAssets.instructionsFontStyle;
         } else {

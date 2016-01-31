@@ -43,6 +43,10 @@ Priest = function(game, x, y, priestData){
 Priest.prototype = Object.create(Phaser.Sprite.prototype);
 Priest.prototype.constructor = Priest;
 
+Priest.prototype.enterScreen = function() {
+	this.game.add.tween(this).to({y:0}, 250, Phaser.Easing.Back.Out, true, 0, 0, false);
+}
+
 Priest.prototype.levelUp = function(){
 	// Every two times a new priest is added and I am alive, I will level up!
 	this.levelsWhileAlive++;
@@ -178,5 +182,7 @@ Priest.prototype.onKeyPress = function(keyCode){
 };
 
 Priest.prototype.kill = function(){
-	this.destroy();
+	tween = this.game.add.tween(this).to({alpha:0}, 150, Phaser.Easing.Linear.None, true, 0, 0, false);
+	tween.onComplete.add(this.destroy, this);
+	//this.destroy();
 };
