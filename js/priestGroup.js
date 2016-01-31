@@ -50,6 +50,8 @@ PriestGroup.prototype.addPriest = function(index){
 			var pd = this.game.gameManager.getRandomPriestData(index);
 			var priest = this.add(new Priest(this.game, 0, 0, pd));
 			priest.x = (i * 100);
+			priest.y = 200;
+			priest.enterScreen();
 			this.priestSpots[i] = priest;
 			break;
 		}

@@ -32,12 +32,12 @@ GameState.prototype = {
 
     	this.game.followerNoiseEnabled = true;
 
-        var initialPopulation = 300;
-        this.followers = new Array(300);
+        var initialPopulation = 400;
+        this.followers = new Array(400);
 		for(var i = 0; i < initialPopulation; i++)
 		{
-            var col = i % 15;
-            var row = Math.floor(i / 15);
+            var col = i % 20;
+            var row = Math.floor(i / 20);
             var follower = new Worshipper(this.game, 450 + (16 * col) + 8 *(row % 2), 350 + (10 * row));
             this.game.world.add(follower);
             var newCol = row;
@@ -115,7 +115,7 @@ GameState.prototype = {
 		this.comboFloat = this.game.add.text(0, 0, '25x', {font: 'Consolas', fontSize: 22, fill: "#00FF00"});
 		this.comboFloat.alpha = 0;
 
-		this.populationText = this.game.add.text(15, 15, 'Total island population: ' + this.game.gameManager.totalPopulation, {font: 'Consolas', fontSize:22});
+		this.populationText = this.game.add.text(this.game.world.width - 350, 15, 'Total island population: ' + this.game.gameManager.totalPopulation, {font: 'Consolas', fontSize:22, align: 'right', wordWrapWidth: 375, wordWrap: true});
         
         this.gameplayOver = false;
         

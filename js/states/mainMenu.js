@@ -89,12 +89,14 @@ MainMenu.prototype = {
 	render: function(){
 	},
 	shutdown: function(){
+        this.titleCardSprite.destroy();
+        this.tf.destroy();
 	},
     enterHandler: function() {
         var test = "state was " + this.menuState;
         if (this.menuState == "Main") {
             if (this.selected == 0){
-                this.game.state.start("GameState", false, false);
+                this.game.state.start("GameState");
                 // stop the music
                 this.priest.destroy();
                 this.conga.destroy();
@@ -141,10 +143,10 @@ MainMenu.prototype = {
             y = 300;
             font = fontAssets.instructionsFontStyle;
         } else {
-            text += 'Made by Massive Assets';
+            text += 'Made by Massive Assets\nLead Programming: Mic & Shahrukh\nPictures: Mike\nNoises: Drew';
             align = 'center'
             x = this.game.world.centerX;
-            y = this.game.world.centerY;
+            y = this.game.world.centerY + 120;
             anchorX = 0.5;
             anchorY = 0.5;
             font = fontAssets.creditsFontStyle;
