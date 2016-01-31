@@ -3,6 +3,7 @@ Worshipper = function(game, x, y){
 	Phaser.Sprite.call(this, game, x, y, 'followers');
     this.anchor.setTo(0.5, 1);
     this.speed = this.game.rnd.integerInRange(5,15)
+    this.scale.setTo(0.5, 0.5);
     this.animations.add('idle', [0,1,2,3,4,5,6,7], this.speed, true);
     this.animations.add('leave', [8,9,10,11,12,13,14,15], this.speed, true);
     this.animations.add('sacrifice', [16,17,18,19,20,21,22,23], this.speed, true);
@@ -41,7 +42,7 @@ Worshipper.prototype.sacrifice = function(){
 Worshipper.prototype.leave = function(){
     this.state = "leave";
     this.animations.play('leave');
-    this.scale.x = -1;
+    this.scale.x *= -1;
 }
 
 Worshipper.prototype.stop = function(){

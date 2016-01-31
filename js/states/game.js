@@ -7,12 +7,16 @@ GameState.prototype = {
 		this.game.bg = this.game.add.sprite(0, 0, 'game_bg');
 		this.bg = this.game.add.sprite(0, 0, 'volcano');
         var initialPopulation = 300;
-        this.followers = [];
+        this.followers = new Array(300);
 		for(var i = 0; i < initialPopulation; i++)
 		{
-            var follower = new Worshipper(this.game, (450 + i) - (i % 24), 350 + 10 * (i % 24) + this.game.rnd.integerInRange(0, 9));
+            var col = i % 15;
+            var row = Math.floor(i / 15);
+            var follower = new Worshipper(this.game, 450 + (16 * col) + 8 *(row % 2), 350 + (10 * row));
             this.game.world.add(follower);
-            this.followers.push(follower);
+            var newCol = row;
+            var newRow = col;
+            this.followers[newRow * 20 + newCol] = follower;
 		}
         this.leftFollowerInd = 0; // every follower with index lower than this has gone to the volcano
         this.rightFollowerInd = initialPopulation - 1; // every follower with index greater than this has walked away
