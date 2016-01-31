@@ -31,15 +31,6 @@ MainMenu.prototype = {
 
 		// Play!
 		game.add.button(40, game.world.centerY - 40, 'button', this.actionOnClick, this, 1, 0, 1);
-
-		// Title
-		var titleProps = {
-			font: "60px Arial",
-			fill: "#fff",
-			align: "center"
-		};
-		var title = game.add.text(50, game.world.centerY / 4, "Escape the Volcano", titleProps);
-		title.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
 	},
 
 	actionOnClick: function(){
