@@ -13,12 +13,12 @@ var GameState = function(game){
 
 	this.score = 0;
 	this.speedScoreFactor = 0.02;
-	this.MAX_SPEED = 800;
+	this.MAX_SPEED = 1200;
 	this.MIN_SPEED = 50;
 
-    this.rhythmEngine = null;
-    this.keyPair = null;
-    this.keyPairText = null;
+	this.rhythmEngine = null;
+	this.keyPair = null;
+	this.keyPairText = null;
 };
 
 GameState.prototype = {
@@ -77,20 +77,19 @@ GameState.prototype = {
 		this.newRunnerTimer();
 		this.evadeSignal = new Phaser.Signal();
 
-
-
-		var time = this.game.time.create(false);
-		this.keyPairText = this.game.add.text(this.game.world.centerX,this.game.world.centerY - 200, "", {font: "200px Arial"});
+		// Rhythm engine
+		this.keyPairText = game.add.text(game.world.centerX, game.world.centerY - 200, "", {font: "200px Arial"});
 		this.keyPairText.anchor.setTo(0.5,0.5);
 		var keyPairs = [
-			[this.game.input.keyboard.addKey(Phaser.Keyboard.W), this.game.input.keyboard.addKey(Phaser.Keyboard.E)],
-			[this.game.input.keyboard.addKey(Phaser.Keyboard.C), this.game.input.keyboard.addKey(Phaser.Keyboard.P)],
-			[this.game.input.keyboard.addKey(Phaser.Keyboard.T), this.game.input.keyboard.addKey(Phaser.Keyboard.B)],
-			[this.game.input.keyboard.addKey(Phaser.Keyboard.K), this.game.input.keyboard.addKey(Phaser.Keyboard.R)]];
-        this.rhythmEngine = new RhythmEngine(time, 500, keyPairs);
-		this.rhythmEngine.onHit.add(this.hitStep, this);
-		this.rhythmEngine.onMiss.add(this.missStep, this);
-		this.rhythmEngine.onDeg.add(this.degrade, this);
+			[game.input.keyboard.addKey(Phaser.Keyboard.W), game.input.keyboard.addKey(Phaser.Keyboard.E)],
+			[game.input.keyboard.addKey(Phaser.Keyboard.C), game.input.keyboard.addKey(Phaser.Keyboard.P)],
+			[game.input.keyboard.addKey(Phaser.Keyboard.T), game.input.keyboard.addKey(Phaser.Keyboard.B)],
+			[game.input.keyboard.addKey(Phaser.Keyboard.K), game.input.keyboard.addKey(Phaser.Keyboard.R)],
+		];
+		this.rhythmEngine = new RhythmEngine(game.time.create(false), 500, keyPairs);
+		this.rhythmEngine.onHit.add(this.onRhythmHit, this);
+		this.rhythmEngine.onMiss.add(this.onRhythmMiss, this);
+		this.rhythmEngine.onDegrade.add(this.onRhythmDegrade, this);
 		this.keyPair = this.rhythmEngine.getPair();
 		this.keyPairText.text = String.fromCharCode(this.keyPair[0].keyCode) + "  " + String.fromCharCode(this.keyPair[1].keyCode);
 	},
@@ -148,9 +147,9 @@ GameState.prototype = {
 		}
 		this.score += Math.floor(this.runningSpeed * this.speedScoreFactor);
 
+		// Rhythm
 		this.keyPair = this.rhythmEngine.getPair();
 		this.keyPairText.text = String.fromCharCode(this.keyPair[0].keyCode) + "  " + String.fromCharCode(this.keyPair[1].keyCode);
-
 	},
 	swapGround: function() {
 		var w = this.scale.width;
@@ -201,37 +200,42 @@ GameState.prototype = {
 		this.player.kill();
 	},
 
-	hitStep: function(e){
-		this.keyPairText.clearColors()
-		this.keyPairText.addColor("#55AA11",e.i);
-		if(e.i == 0 )
-			this.keyPairText.addColor("#000000",1);
+	onRhythmHit: function(e){
+		this.keyPairText.clearColors();
+		this.keyPairText.addColor("#55AA11", e.i);
+		if (e.i == 0) {
+			this.keyPairText.addColor("#000000", 1);
+		}
 		this.runningSpeed = Math.min(this.runningSpeed + 15, this.MAX_SPEED);
 	},
 
-	missStep: function(e){
-		this.keyPairText.clearColors()
-		this.keyPairText.addColor("#AA5500",e.i);
-		if(e.i == 0 )
-			this.keyPairText.addColor("#000000",1);
+	onRhythmMiss: function(e){
+		this.keyPairText.clearColors();
+		this.keyPairText.addColor("#AA5500", e.i);
+		if (e.i == 0) {
+			this.keyPairText.addColor("#000000", 1);
+		}
 		this.runningSpeed = Math.max(this.runningSpeed - 15, this.MIN_SPEED);
 	},
 
-	degrade: function(e){
+	onRhythmDegrade: function(e){
 		this.runningSpeed = Math.max(this.runningSpeed - 15, this.MIN_SPEED);
 	},
-
-
 
 	render: function(){
 		this.game.debug.text(this.score, 10, 20, "#000");
-		if(this.keyPair)
-			this.game.debug.text(String.fromCharCode(this.keyPair[0].keyCode) + " " + String.fromCharCode(this.keyPair[1].keyCode), 10, 40, "#000");
-		//this.game.debug.geom(this.player.getBounds());
-			for (var i = 0; i < this.runners.length; i++) {
-				var runner = this.runners[i];
-				//this.game.debug.geom(runner.getBounds());
-			}
+		if (this.keyPair) {
+			var t = String.fromCharCode(this.keyPair[0].keyCode) + " " + String.fromCharCode(this.keyPair[1].keyCode);
+			this.game.debug.text(t, 10, 40, "#000");
+		}
+
+		/*
+		this.game.debug.geom(this.player.getBounds());
+		for (var i = 0; i < this.runners.length; i++) {
+			var runner = this.runners[i];
+			this.game.debug.geom(runner.getBounds());
+		}
+		*/
 	},
 	shutdown: function(){
 	}
