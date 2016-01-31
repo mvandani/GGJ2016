@@ -6,7 +6,7 @@ Worshipper = function(game, x, y){
     this.animations.add('idle', [0,1,2,3,4,5,6,7], this.speed, true);
     this.animations.add('leave', [8,9,10,11,12,13,14,15], this.speed * 2, true);
     this.animations.add('sacrifice', [16,17,18,19,20,21,22,23], this.speed, true);
-    //this.animations.add('blast', [24,25,26,27,28,29,30,31], this.speed, true);
+    this.animations.add('blast', [24,25,26,27,28,29,30,31], this.speed, true);
     this.animations.play('idle');
     
     this.onSuccessfulChant = new Phaser.Signal();
@@ -14,12 +14,6 @@ Worshipper = function(game, x, y){
     
     this.moveConst = this.speed / 10;
     
-//    	this.game.load.audio('scream', 'assets/sound/fx/WilhelmScream.mp3');
-//    	this.game.load.audio('explosion', 'assets/sound/fx/Explosion.mp3');
-//    	this.game.load.audio('hit', 'assets/sound/fx/Hit.mp3');
-//    	this.game.load.audio('miss', 'assets/sound/fx/Miss.mp3');
-//    	this.game.load.audio('level_down', 'assets/sound/fx/LevelDown.mp3');
-//    	this.game.load.audio('level_up', 'assets/sound/fx/LevelUp.mp3');
     var noises = [
                     this.game.add.audio('scream'),
                     this.game.add.audio('explosion'),
@@ -27,14 +21,12 @@ Worshipper = function(game, x, y){
                     this.game.add.audio('level_down'),
                   ];
     this.noise = noises[this.game.rnd.integerInRange(0,3)];
-    this.blast = this.game.add.audio('explosion');
     this.blastDelay = this.game.time.create(false);
     this.noiseTimer = this.game.time.create(false);
     this.noiseTimer.loop(Phaser.Timer.SECOND * 1, this.enableNoise, this);
-
-//    this.moveTimer = this.game.time.create(false);
-//    this.delayStart = moveTimer;
+    
     this.state = "idle";
+    this.blast();
     /*
     LIST OF STATES
     idle: standing in the crowd
@@ -44,6 +36,7 @@ Worshipper = function(game, x, y){
     jump: jumping at the top of the volcano
     fall: falling into the volcano
     stop: off-stage, no animation
+    readyToBlast: off-stage, no animation
     blast: shoot out of the volcano
     */
 };
@@ -57,14 +50,17 @@ Worshipper.prototype.enableNoise = function(){
 }
 
 Worshipper.prototype.blast = function(){
-    this.blastDelay.start(this.game.rnd.integerInRange(2000,5000), this.actuallyBlast, this);
+    this.blastDelay.add(this.game.rnd.integerInRange(0,3000), this.actuallyBlast, this);
+    this.blastDelay.start();
 }
 
 Worshipper.prototype.actuallyBlast = function(){
-    if (this.state = "stop"){
+    if (this.state == "readyToBlast"){
+        this.x = 220;
+        this.y = 120;
+        this.angle = this.game.rnd.integerInRange(-16,16);
         this.state = "blast"
         this.animations.play('blast');
-        this.blast.play();
     }
 }
 
@@ -80,8 +76,10 @@ Worshipper.prototype.leave = function(){
 }
 
 Worshipper.prototype.stop = function(){
-    this.state = "stop";
-    this.animations.stop();
+    if (this.state != "readyToBlast" && this.state != "leave"){
+        this.state = "stop";
+        this.animations.stop();
+    }
 }
 
 Worshipper.prototype.update = function(){
@@ -123,6 +121,13 @@ Worshipper.prototype.update = function(){
         case "fall":
             this.y += 5 * this.moveConst;
             if (this.y > 350){
+                this.state = "readyToBlast";
+            }
+            break;
+        case "blast":
+            this.y -= 2 * Math.cos(this.angle * Math.PI / 180);
+            this.x -= 2 * Math.sin(this.angle * Math.PI / 180);
+            if (this.y < -100){
                 this.state = "stop";
             }
             break;
