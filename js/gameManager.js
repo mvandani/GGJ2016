@@ -23,6 +23,8 @@ GameManager.prototype = {
         this.followersPenalty = 2;
 		this.followerPenaltyThreshold = 20;
 		this.failedChantPenalty = 2;
+		this.totalFollowers = 0;
+		this.totalDefectors = 0;
         // The followers for each level should be done programatically...
         this.followersNeededForEachLevel = [5, 15, 35, 60, 100, 150, 200];
         this.priestsToChooseFrom = this.priests.concat();

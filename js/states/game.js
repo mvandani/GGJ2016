@@ -43,8 +43,7 @@ GameState.prototype = {
 
 		this.amountNeededForNextLevel = 0;
 		this.followersGainedThisLevel = 0;
-		this.totalFollowers = 0;
-		this.totalDefectors = 0;
+		this.defectorsGainedLocally = 0;
 
 		// Follower gauge
 		this.gaugeWidth = 512;
@@ -160,7 +159,9 @@ GameState.prototype = {
 		this.lastSuccessfulPriest = priest;
 	},
 	onFailedInput: function(){
-		this.totalDefectors += this.game.gameManager.followersPenalty;
+		this.defectorsGainedLocally += this.game.gameManager.followersPenalty;
+		this.game.gameManager.totalDefectors += this.game.gameManager.followersPenalty;
+		this.game.gameManager.totalPopulation -= this.game.gameManager.followersPenalty;
         if (this.leftFollowerInd <= this.rightFollowerInd){
             for (i = 0; i < this.game.gameManager.followersPenalty; i++){
                 this.followers[this.rightFollowerInd].leave();
@@ -181,8 +182,6 @@ GameState.prototype = {
 			this.checkFollowerCount();
 			return;
 		}
-		//var followerIndex = this.priestGroup.numPriests - 1;
-		//var followersLost = this.totalFollowers - (this.game.gameManager.followersNeededForEachLevel[followerIndex] - (this.priestGroup.numPriests * 10));
 		// Reset the amount needed for the delevel progress bar
 		// First, get the percentage of what has already progressed.
 		// We reward the player with the majority percentage of what was either progressed or not progressed.
@@ -191,9 +190,6 @@ GameState.prototype = {
 			percentRemaining = 1 - percentRemaining;
 		this.amountNeededForNextLevel = this.game.gameManager.followersNeededForEachLevel[this.priestGroup.numPriests - 1];
 		this.followersGainedThisLevel = this.game.math.roundTo(this.amountNeededForNextLevel * percentRemaining, 0);
-		//this.totalFollowers -= followersLost;
-		// Subtract from the total population
-		//this.game.gameManager.totalPopulation -= followersLost;
 		this.combo = 0;
 		this.checkFollowerCount();
 	},
@@ -206,21 +202,20 @@ GameState.prototype = {
                 this.leftFollowerInd++;
             }
         }
-		this.totalFollowers += followerCount;
+		this.game.gameManager.totalFollowers += followerCount;
 		this.game.gameManager.totalPopulation -= followerCount;
 		this.followersGainedThisLevel += followerCount;
 		this.checkFollowerCount();
 	},
 	onFailedChant: function(){
-		this.totalDefectors += this.game.gameManager.failedChantPenalty;
-		//this.totalFollowers -= this.game.gameManager.failedChantPenalty;
+		this.defectorsGainedLocally += this.game.gameManager.failedChantPenalty;
+		this.game.gameManager.totalDefectors += this.game.gameManager.failedChantPenalty;
         if (this.leftFollowerInd <= this.rightFollowerInd){
             for (i = 0; i < this.game.gameManager.failedChantPenalty; i++){
                 this.followers[this.rightFollowerInd].leave();
                 this.rightFollowerInd--;
             }
         }
-		//this.totalFollowers -= this.game.gameManager.failedChantPenalty;
 		// Subtract from the total population
 		this.game.gameManager.totalPopulation -= this.game.gameManager.failedChantPenalty;
 		this.combo = 0;
@@ -233,36 +228,24 @@ GameState.prototype = {
 			this.levelUp.play();
 		}
 		this.levelUpProgressBar.width = (this.followersGainedThisLevel / this.amountNeededForNextLevel) * this.gaugeWidth;
-		if(this.totalDefectors >= this.game.gameManager.followerPenaltyThreshold)
+		if(this.defectorsGainedLocally >= this.game.gameManager.followerPenaltyThreshold)
 		{
-			this.totalDefectors = 0;
+			this.defectorsGainedLocally = 0;
 			this.priestGroup.killPriest();
 			this.levelDown.play();
 		}
-		this.levelDownProgressBar.width = (this.totalDefectors / this.game.gameManager.followerPenaltyThreshold) * this.gaugeWidth;
-		if(this.totalFollowers < 0)
-			this.totalFollowers = 0;
-		if(this.priestGroup.numPriests <= 0 || this.game.gameManager.totalPopulation <= 0)
+		this.levelDownProgressBar.width = (this.game.gameManager.totalDefectors / this.game.gameManager.followerPenaltyThreshold) * this.gaugeWidth;
+		// End condition is running out of islanders or priests
+		if(this.game.gameManager.totalPopulation <= 0)
 		{
-			this.game.state.start("Lose", true, false);
+			this.game.state.start("GameOver", true, false, "The island has ran out of inhabitants!");
 			return;
 		}
-		if(this.totalFollowers >= this.game.gameManager.followersNeeded)
+		else if(this.priestGroup.numPriests == 0)
 		{
-			this.game.state.start("Win", true, false);
+			this.game.state.start("GameOver", true, false, "All the priests have been fired!");
 			return;
 		}
-		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation + "\nFollowers: " + this.totalFollowers;
-		/*
-		// Checks the current amount of followers and adjusts the amount of priests and the gauge.
-		for(var i = 1; i <= this.game.gameManager.followersNeededForEachLevel.length; i++)
-		{
-			var numFollowersNeeded = this.game.gameManager.followersNeededForEachLevel[i-1];
-			if(this.totalFollowers > numFollowersNeeded && this.priestGroup.numPriests <= i)
-				this.priestGroup.addPriest();
-			else if(this.totalFollowers < numFollowersNeeded && this.priestGroup.numPriests > i)
-				this.priestGroup.killLeader();
-		}
-		*/
+		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation + "\nFollowers: " + this.game.gameManager.totalFollowers;
 	}
 }
