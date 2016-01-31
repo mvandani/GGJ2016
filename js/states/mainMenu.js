@@ -143,10 +143,10 @@ MainMenu.prototype = {
             y = 300;
             font = fontAssets.instructionsFontStyle;
         } else {
-            text += 'Made by Massive Assets';
+            text += 'Made by Massive Assets\nLead Programming: Mic & Shahrukh\nPictures: Mike\nNoises: Drew';
             align = 'center'
             x = this.game.world.centerX;
-            y = this.game.world.centerY;
+            y = this.game.world.centerY + 120;
             anchorX = 0.5;
             anchorY = 0.5;
             font = fontAssets.creditsFontStyle;
