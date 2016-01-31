@@ -56,15 +56,13 @@ RhythmEngine.prototype = {
 	},
 
 	endTimer: function(){
-		var keyPairs = this.keyPairs;
-		var pairIndex = this.pairIndex;
 		this.onDegrade.dispatch(this.MISS);
 		if(Math.floor(this.timer.ms / this.degradeTime) % 10 == 0){
-			keyPairs[pairIndex][0].onDown.remove(this.step, this);
-			keyPairs[pairIndex][1].onDown.remove(this.step, this);
-			this.pairIndex = Math.floor((Math.random() * keyPairs.length));
-			keyPairs[pairIndex][0].onDown.add(this.step, this);
-			keyPairs[pairIndex][1].onDown.add(this.step, this);
+			this.keyPairs[this.pairIndex][0].onDown.remove(this.step, this);
+			this.keyPairs[this.pairIndex][1].onDown.remove(this.step, this);
+			this.pairIndex = Math.floor((Math.random() * this.keyPairs.length));
+			this.keyPairs[this.pairIndex][0].onDown.add(this.step, this);
+			this.keyPairs[this.pairIndex][1].onDown.add(this.step, this);
 		}
 	},
 }
