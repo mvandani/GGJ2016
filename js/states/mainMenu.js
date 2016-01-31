@@ -94,7 +94,7 @@ MainMenu.prototype = {
         var test = "state was " + this.menuState;
         if (this.menuState == "Main") {
             if (this.selected == 0){
-                this.game.state.start("GameState", false, false);
+                this.game.state.start("GameState");
                 // stop the music
                 this.priest.destroy();
                 this.conga.destroy();
