@@ -1,12 +1,8 @@
 Priest = function(game, x, y, priestData){
 	// InputTime MUST be shorter than showingTime!
 	Phaser.Sprite.call(this, game, x, y, priestData.priest, 0);
-	if(priestData.priest == "priest_4")
-		this.animations.add('idle', [0,1,2,3,4,5], 7, true);
-	if(priestData.priest == "priest_3")
-		this.animations.add('idle', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], 7, true);
-	if(priestData.priest == "priest_4" || priestData.priest == "priest_3")
-		this.animations.play('idle');
+	this.animations.add('idle', priestData.frames, priestData.fps, true);
+	this.animations.play('idle');
 	this.priestData = priestData;
 	this.showingTime = priestData.shownTime;
 	this.inputTime = priestData.inputTime;

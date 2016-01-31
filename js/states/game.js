@@ -100,6 +100,7 @@ GameState.prototype = {
 		this.priestGroup.onFailedInput.remove(this.onFailedInput, this);
 	},
 	beginGame: function(){
+	    this.game.audioManager.playAllTracks();
 		this.introTimer.destroy();
 		this.priestGroup.addPriest();
 	    // Listen for the input on the keys
@@ -111,7 +112,6 @@ GameState.prototype = {
 	    this.interactionKeys.down.onDown.add(this.onDirectionKeyPress, this);
 	    this.interactionKeys.left.onDown.add(this.onDirectionKeyPress, this);
 	    this.interactionKeys.right.onDown.add(this.onDirectionKeyPress, this);
-	    this.game.audioManager.playAllTracks();
 	},
 	updateIntroText: function(){
 		this.introText.text = this.introTime--;
