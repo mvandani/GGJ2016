@@ -22,6 +22,7 @@ MainMenu.prototype = {
 		game.load.image("menu-bg", "assets/mainmenu.jpg");
 		game.load.image("loss", "assets/loss.jpg");
 		game.load.image("win", "assets/win.jpg");
+		game.load.image("key", "assets/buttons/key.png");
 		game.load.spritesheet("priests", "assets/priests.png", 267, 200, 2);
 		game.load.spritesheet('button', 'assets/buttons/start_button.png', 202, 171);
 		game.load.spritesheet("retry_button", "assets/buttons/retry_button.png", 202, 171);
