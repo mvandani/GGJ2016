@@ -19,7 +19,7 @@ MainMenu.prototype = {
 		game.load.image("menu-bg", "assets/mainmenu.jpg");
 		game.load.image("ending-bg", "assets/ending.jpg");
 		game.load.spritesheet("priests", "assets/priests.png", 267, 200, 2);
-		game.load.spritesheet('button', 'assets/buttons/button_sprite_sheet.png', 193, 71);
+		game.load.spritesheet('button', 'assets/buttons/start_button.png', 202, 171);
 	},
 	create: function(){
 		var game = this.game;
@@ -28,7 +28,7 @@ MainMenu.prototype = {
 		this.add.tileSprite(0, 0, w, h, "menu-bg");
 
 		// Play!
-		game.add.button(game.world.centerX - 95, game.world.centerY * 1.5, 'button', this.actionOnClick, this, 2, 1, 0);
+		game.add.button(40, game.world.centerY - 40, 'button', this.actionOnClick, this, 1, 0, 1);
 
 		// Title
 		var titleProps = {
