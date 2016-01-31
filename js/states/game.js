@@ -15,7 +15,7 @@ var GameState = function(game){
 	this.speedScoreFactor = 0.02;
 	this.MAX_SPEED = 800;
 };
- 
+
 GameState.prototype = {
 	/* State methods */
 	init: function(params){
@@ -52,7 +52,7 @@ GameState.prototype = {
 
 		//add runner (just test code)
 		for (var i = 0; i < this.numRunners; i++) {
-			var r = new Runner(game);
+			var r = new Runner(game, -900, 0);
 			r.create();
 			this.runners.push(r);
 		}
@@ -95,17 +95,16 @@ GameState.prototype = {
 		this.mountain.tilePosition.x += 0.005;
 		this.sky.tilePosition.x += 0.25;
 		for (var i = 0; i < this.grounds.length; i++) {
-			this.grounds[i].body.velocity.x = this.runningSpeed;	
+			this.grounds[i].body.velocity.x = this.runningSpeed;
 		}
 		this.player.update(this.runningSpeed);
 		//update runner(s) that are on screen
 		for (var i = 0; i < this.runners.length; i++) {
 			var runner = this.runners[i];
+			runner.update(this.runningSpeed, this.player);
 			if (!runner.running) {
 				continue;
 			}
-			runner.update(this.runningSpeed, this.player);
-
 			if (runner.approached()) {
 				this.showHitButton();
 			}
@@ -135,8 +134,8 @@ GameState.prototype = {
 		for (var i = 0; i < this.runners.length; i++) {
 			var r = this.runners[i];
 			if (!r.running) {
-				r.addToGame(this.dispRoot);
-				r.running = true;
+				r.revive();
+				this.dispRoot.addChild(r);
 				break;
 			}
 		}
@@ -150,7 +149,6 @@ GameState.prototype = {
 				var runner = this.runners[i];
 				if (runner.isClose()) {
 					runner.evade();
-					runner.running = false;
 					this.hitButton.kill();
 					this.hitButtonOn = false;
 					this.evadeSignal.dispatch("close");
