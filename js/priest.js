@@ -14,6 +14,7 @@ Priest = function(game, x, y, priestData){
 	this.track = priestData.track;
 	this.levelsWhileAlive = 0;
 	this.level = 0;
+	this.keys = [];
 
     this.onSuccessfulInput = new Phaser.Signal();
     this.onSuccessfulChant = new Phaser.Signal();
@@ -34,7 +35,7 @@ Priest = function(game, x, y, priestData){
 
     this.timesUpTimer = this.game.time.create(false);
     this.showControlsTimer = this.game.time.create(false);
-    this.showControlsTimer.loop(Phaser.Timer.SECOND * this.showingTime, this.showControls, this);
+    this.showControlsTimer.add(Phaser.Timer.SECOND * this.showingTime, this.showControls, this);
     this.showControlsTimer.start();
     this.track.volume = 1;
 };
@@ -54,12 +55,8 @@ Priest.prototype.updateDifficulty = function(){
 		return;
 	this.level++;
 	// Create a new set of keys based on the difficulty level
-	this.keys = [];
-	for(var i = 0; i < this.level; i++)
-	{
-		var rndIndex = this.game.rnd.integerInRange(0, this.baseKeys.length - 1);
-		this.keys.push(this.baseKeys[rndIndex]);
-	}
+	var rndIndex = this.game.rnd.integerInRange(0, this.baseKeys.length - 1);
+	this.keys.push(this.baseKeys[rndIndex]);
 	this.updateIcons();
 };
 
@@ -129,6 +126,8 @@ Priest.prototype.timesUp = function(){
 Priest.prototype.hideControls = function(){
 	this.controlsShowing = false;
     this.controlsBG.visible = false;
+    this.showControlsTimer.add(Phaser.Timer.SECOND * this.showingTime, this.showControls, this);
+    this.showControlsTimer.start();
 };
 
 Priest.prototype.keyHit = function(){
@@ -159,6 +158,7 @@ Priest.prototype.failedToHitKeys = function(){
 }
 
 Priest.prototype.allKeysHit = function(){
+	this.timesUpTimer.stop(true);
 	this.onSuccessfulChant.dispatch(this);
 	this.hideControls();
 };
