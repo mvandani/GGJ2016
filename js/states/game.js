@@ -4,7 +4,8 @@ var GameState = function(game){
 GameState.prototype = {
 	/* State methods */
 	create: function(){
-		this.bg = this.game.add.sprite(0, 0, 'game_bg');
+		this.game.bg = this.game.add.sprite(0, 0, 'game_bg');
+		this.bg = this.game.add.sprite(0, 0, 'volcano');
         var initialPopulation = 300;
         this.followers = [];
 		for(var i = 0; i < initialPopulation; i++)
