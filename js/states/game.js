@@ -87,8 +87,6 @@ GameState.prototype = {
 			this.runners.push(r);
 		}
 
-		//Temporary hit button (to evade)
-		this.hitButton = new Phaser.Sprite(game, 0,0, 'root');
 		this.evadeKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		this.evadeKey.onDown.add(this.tryEvade, this);
 
@@ -132,8 +130,13 @@ GameState.prototype = {
 					labelText = String.fromCharCode(keyPair[i].keyCode);
 					break;
 				case 2:
-					labelText = "SPACE";
-					style = {'font': '100px Arial', 'fill': 'black'};
+					labelText = "Enemy Alert!";
+					style = {
+						'font': '100px Arial', 'fill': 'black',
+						wordWrap: true,
+						wordWrapWidth: 150,
+						align: "center",
+					};
 					break;
 				default:
 					break;
@@ -245,7 +248,7 @@ GameState.prototype = {
 				var runner = this.runners[i];
 				if (runner.isClose()) {
 					runner.evade();
-					this.hitButton.kill();
+					this.keyHud[2].tint = 0xFFFFFF;
 					this.numKills+=1;
 					if(this.numKills%5 == 0){
 						this.bonusSounds[Math.floor(Math.random() * this.bonusSounds.length)].play();
@@ -260,8 +263,7 @@ GameState.prototype = {
 	},
 	showHitButton: function() {
 		var game = this.game;
-		this.hitButton.reset(0,0);
-		game.add.existing(this.hitButton);
+		this.keyHud[2].tint = 0xFF0000;
 		this.hitButtonOn = true;
 		this.evadeSignal.dispatch("open");
 	},
