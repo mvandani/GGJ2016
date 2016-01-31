@@ -31,7 +31,7 @@ Preload.prototype = {
 		// Spritesheets
 		this.game.load.spritesheet('idol', 'assets/images/priests/Idol.png', 96, 128);
 		this.game.load.spritesheet('nun', 'assets/images/priests/Nun.png', 96, 128);
-		this.game.load.spritesheet('followers', 'assets/images/Follower idles.png', 33, 93);
+		this.game.load.spritesheet('followers', 'assets/images/follower.png', 33, 93);
 
 		// Load the game audio
     	this.game.load.audio('priest', 'assets/sound/music/Priest.mp3');

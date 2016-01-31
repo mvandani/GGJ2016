@@ -65,13 +65,6 @@ Worshipper.prototype.update = function(){
             }
             break;
         case "climb":
-            code block
-            break;
-        case n:
-            code block
-            break;
-        case n:
-            code block
             break;
     }
 };

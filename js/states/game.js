@@ -156,6 +156,10 @@ GameState.prototype = {
 	},
 	onFailedInput: function(){
 		this.totalDefectors += this.game.gameManager.followersPenalty;
+        for (i = 0; i < this.game.gameManager.followersPenalty; i++){
+            this.followers[this.rightFollowerInd].leave();
+            this.rightFollowerInd--;
+        }
 		this.checkFollowerCount();
 	},
 	onPriestAdded: function(priest){
