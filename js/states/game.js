@@ -6,6 +6,14 @@ GameState.prototype = {
 	create: function(){
 		this.game.bg = this.game.add.sprite(0, 0, 'game_bg');
 		this.bg = this.game.add.sprite(0, 0, 'volcano');
+		this.smoke = this.game.add.sprite(0, 0, 'smoke');
+		
+		this.smoke.animations.add('smokey', [0,1,2,3,4,5], 6, true);
+    	this.smoke.animations.play('smokey');
+    	this.smoke.x = 165;
+    	this.smoke.y = -28;
+    	this.smoke.scale.y = 1.5;
+
         var initialPopulation = 300;
         this.followers = new Array(300);
 		for(var i = 0; i < initialPopulation; i++)
