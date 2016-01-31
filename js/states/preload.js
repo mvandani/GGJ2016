@@ -43,6 +43,7 @@ Preload.prototype = {
 		this.game.load.spritesheet('shadow', 'assets/images/priests/Shadow.png', 96, 128);
 		this.game.load.spritesheet('followers', 'assets/images/follower.png', 36, 93);
 		this.game.load.spritesheet('smoke', 'assets/images/Smoke.png', 96, 96);
+		this.game.load.spritesheet('lightning', 'assets/images/LightningSprite.png', 96, 128);
 
 		// Load the game audio
     	this.game.load.audio('priest', 'assets/sound/music/Priest.mp3');

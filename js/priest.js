@@ -22,6 +22,10 @@ Priest = function(game, x, y, priestData){
 
     this.levelUpPending = false;
 
+    this.levelUpAnim = this.addChild(new Phaser.Sprite(this.game, 0, 0, 'lightning', 0));
+    this.levelUpAnim.animations.add('go', [0,1,2,3,4,5,0,1,2,3,4,5,0], 10, false);
+    this.levelUpAnim.visible = false;
+
 	// Create all the icons and keys to use.
 	// Text will be used for the characters.
 	this.iconLookup = this.game.cache.getJSON('iconLookup');
@@ -60,12 +64,14 @@ Priest.prototype.levelUp = function(){
 	this.levelsWhileAlive++;
 	if(this.levelsWhileAlive > 0 && this.levelsWhileAlive % 2 == 0)
 		this.updateDifficulty();
+	this.levelUpAnim.visible = true;
 };
 
 Priest.prototype.updateDifficulty = function(){
 	if(this.level + 1 > 3) // No more leveling up!
 		return;
 	this.level++;
+	this.levelUpAnim.play('go');
 	// Create a new set of keys based on the difficulty level
 	var rndIndex = this.game.rnd.integerInRange(0, this.baseKeys.length - 1);
 	this.keys.push(this.baseKeys[rndIndex]);
