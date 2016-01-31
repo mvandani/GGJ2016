@@ -8,14 +8,14 @@ var RhythmEngine = function(timer, degTime, keyPairs){
 
 	this.keyPairs = keyPairs;
 
+
+	this.keyIndex = 0;
+	this.pairIndex = Math.floor((Math.random() * keyPairs.length));
 	// for(var i = 0; i < keyPairs.length; i++){
 	// 	keyPairs[i]
 	// }
-	keyPairs[0][0].onDown.add(this.step, this);
-	keyPairs[0][1].onDown.add(this.step, this);
-
-	this.keyIndex = 0;
-	this.pairIndex = 0;
+	keyPairs[this.pairIndex][0].onDown.add(this.step, this);
+	keyPairs[this.pairIndex][1].onDown.add(this.step, this);
 
 	this.isStarting = true;
 
@@ -30,12 +30,12 @@ RhythmEngine.prototype = {
 	HIT: "hit",
 	MISS: "miss",
 
-	missStep: function(){
-		this.onMiss.dispatch(this.MISS);
+	missStep: function(key){
+		this.onMiss.dispatch({"key": key, "i":this.keyIndex});
 	},
 
-	hitStep: function(){
-		this.onHit.dispatch(this.HIT);
+	hitStep: function(key){
+		this.onHit.dispatch({"key": key, "i":this.keyIndex});
 	},
 
 	step: function(e){
@@ -43,18 +43,18 @@ RhythmEngine.prototype = {
 		var ms = this.timer.ms;
 
 		if(key == this.keyPairs[this.pairIndex][this.keyIndex]){
-			this.hitStep();
+			this.hitStep(key);
 		}
 		else{
 			if(this.isStarting){
 				this.keyIndex = (this.keyIndex+1)%2;
 				this.isStarting = false;
 			}
-			else
+			else{
 				//let them start however they want next time
 				this.isStarting = true;
-
-			this.missStep();
+			}
+			this.missStep(key);
 		}
 
 		this.keyIndex = (this.keyIndex+1)%2;
