@@ -133,7 +133,7 @@ Worshipper.prototype.update = function(){
                 this.game.world.sendToBack(this.game.clouds);
                 this.game.bg.sendToBack();
                 if (this.game.followerNoiseEnabled){
-                    this.noise.play();
+                    this.noise.play("", 0, 0.25);
                     this.game.followerNoiseEnabled = false;
                     this.noiseTimer.start();
                 }

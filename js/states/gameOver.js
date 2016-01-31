@@ -140,7 +140,7 @@ GameOver.prototype = {
     	this.leftPlatform.body.velocity.y = 0;
     	this.rightPlatform.body.velocity.x = 0;
     	this.rightPlatform.body.velocity.y = 0;
-		this.worshipperText.text = this.worshipperEmitter.totalEmitted + " True believers";
+		this.worshipperText.text = this.worshipperEmitter.totalEmitted + " True Believers";
 		this.defectorText.text = this.defectorEmitter.totalEmitted + " Disbelievers";
 		if(!this.rotateScale)
 			return;
