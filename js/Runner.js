@@ -12,6 +12,17 @@ var Runner = function(game, x, y) {
 
 	this.invisBox = null;
 
+	this.hitSounds = [this.game.add.audio('flying0'),
+			this.game.add.audio('flying1'),
+			this.game.add.audio('flying2'),
+			// this.game.add.audio('flying3'),
+			// this.game.add.audio('flying4'),
+			this.game.add.audio('hit0'),
+			this.game.add.audio('hit1'),
+			this.game.add.audio('hit2'),
+			this.game.add.audio('hit3'),
+			this.game.add.audio('hit4')];
+
 	Phaser.Sprite.call(this, game, this.startX, this.startY, 'runner');
 };
 
@@ -92,6 +103,10 @@ Runner.prototype.isHit = function() {
 Runner.prototype.evade = function() {
 	this.running = false;
 	this.animations.play('die', 8, false, true);
+}
+
+Runner.prototype.playDeathAudio = function(){
+	this.hitSounds[Math.floor(Math.random() * this.hitSounds.length)].play();
 }
 
 Runner.prototype.kill = function() {

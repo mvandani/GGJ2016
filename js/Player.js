@@ -3,6 +3,11 @@ var Player = function (game, x, y) {
 	this.spriteW = 174;
 	this.spriteH = 234;
 	Phaser.Sprite.call(this, game, x - this.spriteW / 2, y - this.spriteH / 2, 'player');
+	this.punches = [this.game.add.audio('punch0'),
+			this.game.add.audio('punch1'),
+			this.game.add.audio('punch2'),
+			this.game.add.audio('punch3'),
+			this.game.add.audio('punch4')];
 };
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -26,6 +31,7 @@ Player.prototype.update = function(runSpeed){
 
 Player.prototype.punch = function() {
 	this.animations.play("punch", 12, false);
+	this.punches[Math.floor(Math.random() * this.punches.length)].play();
 };
 
 Player.runSpeedToFps = function (runSpeed) {

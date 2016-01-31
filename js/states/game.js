@@ -18,6 +18,9 @@ var GameState = function(game){
 
 	this.rhythmEngine = null;
 	this.keyPairText = null;
+
+	this.bonusSounds = [];
+	this.numKills = 0;
 };
 
 GameState.prototype = {
@@ -85,6 +88,19 @@ GameState.prototype = {
 
 		this.newRunnerTimer();
 		this.evadeSignal = new Phaser.Signal();
+
+		//sounds
+		this.bonusSounds = [this.game.add.audio('good0'),
+			this.game.add.audio('good1'),
+			this.game.add.audio('good2'),
+			this.game.add.audio('good3'),
+			this.game.add.audio('good4'),
+			this.game.add.audio('good5'),
+			this.game.add.audio('good6'),
+			this.game.add.audio('good7'),
+			this.game.add.audio('good8'),
+			this.game.add.audio('good9')];
+
 
 		// Rhythm engine
 		this.keyPairText = game.add.text(game.world.centerX, game.world.centerY - 200, "", {font: "200px Arial"});
@@ -201,6 +217,12 @@ GameState.prototype = {
 				if (runner.isClose()) {
 					runner.evade();
 					this.hitButton.kill();
+					this.numKills+=1;
+					if(this.numKills%5 == 0){
+						this.bonusSounds[Math.floor(Math.random() * this.bonusSounds.length)].play();
+					}else{
+						runner.playDeathAudio();
+					}
 					this.hitButtonOn = false;
 					this.evadeSignal.dispatch("close");
 				}
@@ -258,6 +280,7 @@ GameState.prototype = {
 			var t = String.fromCharCode(kp[0].keyCode) + " " + String.fromCharCode(kp[1].keyCode);
 			this.game.debug.text(t, 10, 40, "#000");
 		}
+		this.game.debug.text(this.numKills, 10 , 60, "#000");
 
 		/*
 		this.game.debug.geom(this.player.getBounds());
