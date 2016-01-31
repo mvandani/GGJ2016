@@ -8,6 +8,8 @@ GameState.prototype = {
         this.game.clouds = new CloudGroup(this.game);
 		this.bg = this.game.add.sprite(0, 0, 'volcano');
 		this.smoke = this.game.add.sprite(0, 0, 'smoke');
+        
+        this.game.followerNoiseEnabled = true;
 		
 		this.smoke.animations.add('smokey', [0,1,2,3,4,5], 6, true);
     	this.smoke.animations.play('smokey');
