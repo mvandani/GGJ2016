@@ -20,8 +20,7 @@
 		<script type="text/javascript" src="js/states/preload.js"></script>
 		<script type="text/javascript" src="js/states/mainMenu.js"></script>
 		<script type="text/javascript" src="js/states/game.js"></script>
-		<script type="text/javascript" src="js/states/win.js"></script>
-		<script type="text/javascript" src="js/states/lose.js"></script>
+		<script type="text/javascript" src="js/states/gameOver.js"></script>
 
 		<script type="text/javascript">
 			(function(){
@@ -29,8 +28,7 @@
 				game.state.add("Preload", Preload);
 				game.state.add("MainMenu", MainMenu);
 				game.state.add("GameState", GameState);
-				game.state.add("Win", Win);
-				game.state.add("Lose", Lose);
+				game.state.add("GameOver", GameOver);
 				game.state.start("Preload");
 			})();    
 		</script>

@@ -12,12 +12,20 @@ Preload.prototype = {
 		this.game.load.image('down', 'assets/images/down.png');
 		this.game.load.image('left', 'assets/images/left.png');
 		this.game.load.image('right', 'assets/images/right.png');
+		this.game.load.image('true_worshipper', 'assets/images/follower-3.png');
+		this.game.load.image('defector', 'assets/images/follower-1.png');
+
+		// Scale
+		this.game.load.image('scale_fulcrum', 'assets/images/Scale fulcrum.png');
+		this.game.load.image('scale_beam', 'assets/images/Scale beam.png');
+		this.game.load.image('scale_platform', 'assets/images/Scale platform.png');
 
 		// Backgrounds
 		this.game.load.image('cloud1', 'assets/images/Cloud 1.png');
 		this.game.load.image('cloud2', 'assets/images/Cloud 2.png');
 		this.game.load.image('cloud3', 'assets/images/Cloud 3.png');
 		this.game.load.image('game_bg', 'assets/images/Background.png');
+		this.game.load.image('night_bg', 'assets/images/Background Night.png');
 		this.game.load.image('volcano', 'assets/images/Volcano.png');
 
 		// Particles
