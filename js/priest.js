@@ -20,6 +20,8 @@ Priest = function(game, x, y, priestData){
     this.onSuccessfulChant = new Phaser.Signal();
     this.onFailedChant = new Phaser.Signal();
 
+    this.levelUpPending = false;
+
 	// Create all the icons and keys to use.
 	// Text will be used for the characters.
 	this.iconLookup = this.game.cache.getJSON('iconLookup');
@@ -48,6 +50,12 @@ Priest.prototype.enterScreen = function() {
 };
 
 Priest.prototype.levelUp = function(){
+	if(this.controlsShowing)
+	{
+		this.levelUpPending = true;
+		return;
+	}
+	this.levelUpPending = false;
 	// Every two times a new priest is added and I am alive, I will level up!
 	this.levelsWhileAlive++;
 	if(this.levelsWhileAlive > 0 && this.levelsWhileAlive % 2 == 0)
@@ -141,6 +149,9 @@ Priest.prototype.timesUp = function(){
 Priest.prototype.hideControls = function(){
 	this.controlsShowing = false;
     this.controlsBG.visible = false;
+    // If a level up was pending, level up!
+    if(this.levelUpPending)
+    	this.levelUp();
     this.showControlsTimer.add(Phaser.Timer.SECOND * this.showingTime, this.showControls, this);
     this.showControlsTimer.start();
 };
