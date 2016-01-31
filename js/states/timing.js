@@ -21,9 +21,9 @@ Timing.prototype = {
 
 
 		var stepTimer = this.game.time.create(false);
-		this.rhythmEngine = new RhythmEngine(stepTimer, 10000, 2000);
-		this.rhythmEngine.onHit.add(this.winStep, this);
-		this.rhythmEngine.onMiss.add(this.failStep, this);
+		this.rhythmEngine = new RhythmEngine(stepTimer, 500, []);
+		this.rhythmEngine.onHit.add(this.hitStep, this);
+		this.rhythmEngine.onMiss.add(this.missStep, this);
 
 
 		this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -57,13 +57,13 @@ Timing.prototype = {
 	},
 
 
-	failStep: function(e){
+	missStep: function(e){
 		this.speed -= 1;
 		this.text.addColor("#FF3300", 0);
 		this.text.addColor("#FFFFFF", 3);
 	},
 
-	winStep: function(e){
+	hitStep: function(e){
 		this.speed += 1;
 		this.text.addColor("#77cc33", 0);
 		this.text.addColor("#FFFFFF", 3);
