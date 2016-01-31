@@ -1,34 +1,56 @@
-var Runner = function(game) {
+var Runner = function(game, x, y) {
 	this.game = game;
-	this.startX = -900;
-	Phaser.Sprite.call(this, game, this.startX, -game.cache.getImage("runner").height / 2, 'runner');
+	this.spriteW = 174;
+	this.spriteH = 234;
+	this.startX = x - this.spriteW / 2;
+	this.startY = y - this.spriteH / 2;
+
+	this.running = false;
 	this.closeToPlayer = false;
 	this.hitPlayer = false;
 	this.wasClose = false;
-	this.destroyed = false;
-	this.invisBox = new Phaser.Sprite(game, this.startX, -game.cache.getImage("runner").height / 2, "");
+
+	this.invisBox = null;
+
+	Phaser.Sprite.call(this, game, this.startX, this.startY, 'runner');
 };
 
 Runner.prototype = Object.create(Phaser.Sprite.prototype);
 Runner.prototype.constructor = Runner;
 Runner.prototype.create = function(){
 	var game = this.game;
+
+	// Second hitbox
+	this.invisBox = new Phaser.Sprite(game, this.startX, this.startY, "");
 	this.addChild(this.invisBox);
+
+	// Laws of nonsense
 	game.physics.arcade.enable(this);
 	this.body.setSize(this.width-35, this.height, 0, 0);
 	this.invisBox.body.setSize(this.width+60, this.height, 0, 0);
-	this.run = this.animations.add('run');
+
+	this.animations.add('run', [0,1]);
+	this.animations.add('die', [2,2]);
+}
+
+Runner.prototype.revive = function(){
+	this.running = true;
+	this.closeToPlayer = false;
+	this.hitPlayer = false;
+	this.wasClose = false;
+
+	this.reset(this.startX, this.startY);
+	this.invisBox.reset(this.startX, this.startY);
 	this.animations.play('run', 6, true);
 }
 
-Runner.prototype.addToGame = function(dispRoot) {
-	var game = this.game;
-	this.revive();
-	dispRoot.addChild(this);
-}
 Runner.prototype.update = function(runSpeed, player){
 	var game = this.game;
-	if (!this.destroyed && !this.hitPlayer) {
+	if (!this.exists) {
+		return;
+	}
+
+	if (!this.hitPlayer) {
 		this.body.velocity.x = runSpeed + 50;
 		//Readjust buffer based on speed.
 		var buffer = 40 + Math.min(40, Math.floor(runSpeed / 15));
@@ -46,9 +68,11 @@ Runner.prototype.update = function(runSpeed, player){
 		}
 	}
 }
+
 Runner.prototype.gotClose = function() {
 	this.closeToPlayer = true;
 }
+
 Runner.prototype.approached = function() {
 	if (!this.wasClose && this.closeToPlayer) {
 		this.wasClose = true;
@@ -56,25 +80,21 @@ Runner.prototype.approached = function() {
 	}
 	return false;
 }
+
 Runner.prototype.isClose = function() {
 	return this.closeToPlayer;
 }
+
 Runner.prototype.isHit = function() {
 	return this.hitPlayer;
 }
 
 Runner.prototype.evade = function() {
-		this.kill();
-		this.invisBox.kill();
-		this.destroyed = true;
+	this.running = false;
+	this.animations.play('die', 8, false, true);
 }
 
-Runner.prototype.revive = function() {
-	var game = this.game;
-	this.closeToPlayer = false;
-	this.hitPlayer = false;
-	this.wasClose = false;
-	this.destroyed = false;
-	this.reset(this.startX, -game.cache.getImage("runner").height / 2);
-	this.invisBox.reset(this.startX, -game.cache.getImage("runner").height / 2);
+Runner.prototype.kill = function() {
+	Phaser.Sprite.prototype.kill.call(this);
+	this.invisBox.kill();
 }
