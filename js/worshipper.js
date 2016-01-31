@@ -97,6 +97,7 @@ Worshipper.prototype.update = function(){
         case "leave":
             this.x += this.moveConst;
             if (this.x - 24 > 800){
+                this.state = "idle";
                 this.stop();
             }
             break;

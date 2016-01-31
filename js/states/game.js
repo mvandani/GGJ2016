@@ -22,10 +22,10 @@ GameState.prototype = {
 		    	this.smoke.x = 165;
 		    	this.smoke.y = -28;
 		    	this.smoke.scale.y = 1.5;
-		    	smokeEntranceTween = this.game.add.tween(this.smoke).to({alpha:1}, 1000, Phaser.Easing.Circular.InOut, true);
-		    	smokeEntranceTween.onComplete.add(function() {
+		    	this.smokeEntranceTween = this.game.add.tween(this.smoke).to({alpha:1}, 1000, Phaser.Easing.Circular.InOut, true);
+		    	this.smokeEntranceTween.onComplete.add(function() {
 		    		this.smoke.alpha = 1;
-		    		this.game.add.tween(this.smoke).to({alpha:.5}, 2000, Phaser.Easing.Circular.InOut, true).yoyo(true,-1)
+		    		this.smokeYoyoTween = this.game.add.tween(this.smoke).to({alpha:.5}, 2000, Phaser.Easing.Circular.InOut, true).yoyo(true,-1)
 		    	}, this);
 			}, this);
 		}, this);		
@@ -117,11 +117,40 @@ GameState.prototype = {
 
 		this.populationText = this.game.add.text(15, 15, 'Total island population: ' + this.game.gameManager.totalPopulation, {font: 'Consolas', fontSize:22});
         
+        this.gameplayOver = false;
+        
 	    this.gameStartTimer = this.game.time.create(true);
 	    this.gameStartTimer.add(Phaser.Timer.SECOND * 4, this.beginGame, this);
 	    this.gameStartTimer.start();
 	},
 	update: function(){
+        if (this.gameplayOver){
+            var readyToEnd = true;
+            for (i = 0; i < 300; i++){
+                if (this.followers[i].state != "stop" && 
+                    this.followers[i].state != "readyToBlast" && 
+                    this.followers[i].state != "idle"){
+                    readyToEnd = false;
+                    console.log(this.followers[i].state);
+                }
+            }
+            if (readyToEnd) {
+                for (i = 0; i < 300; i++){
+                    this.followers[i].stop();
+                    this.followers[i].blast();
+                }
+
+                smokeExitTween = this.game.add.tween(this.smoke).to({alpha:0}, 500, Phaser.Easing.Circular.InOut, true);
+
+                var blastNoise = this.game.add.audio('explosion');
+                blastNoise.play();
+                var blastTimer = this.game.time.create(false);
+                var reason = this.game.gameManager.totalPopulation <= 0 ? "pop" : "priests";
+                blastTimer.add(Phaser.Timer.SECOND * 6, this.endGame, this, reason);
+                blastTimer.start();
+                this.gameplayOver = false;
+            }
+        }
 	},
 	render: function(){
 		//this.game.debug.text("Time: " + (this.game.time.now - this.elapsedSinceTime), 32, this.game.world.height - 32);
@@ -270,16 +299,7 @@ GameState.prototype = {
 		// End condition is running out of islanders or priests
         if (this.game.gameManager.totalPopulation <= 0 || this.priestGroup.numPriests == 0) {
             this.game.input.keyboard.destroy();
-            for (i = 0; i < 300; i++){
-                this.followers[i].stop();
-                this.followers[i].blast();
-            }
-            var blastNoise = this.game.add.audio('explosion');
-            blastNoise.play();
-            var blastTimer = this.game.time.create(false);
-            var reason = this.game.gameManager.totalPopulation <= 0 ? "pop" : "priests";
-            blastTimer.add(Phaser.Timer.SECOND * 6, this.endGame, this, reason);
-            blastTimer.start();
+            this.gameplayOver = true;
         }
 		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation + "\nFollowers: " + this.game.gameManager.totalFollowers;
 	},
