@@ -1,18 +1,27 @@
-var RhythmEngine = function(timer, length, grace){
-	this.timerLength = length;
-	this.grace = grace;
-
+var RhythmEngine = function(timer, degTime, keyPairs){
 	this.timer = timer;
-	this.timer.loop(this.timerLength, this.endTimer, this);
 
-	this.keyHit = false;
-	this.lastKey = null;
-
+	this.degTime = degTime;
+	this.timer.loop(degTime, this.endTimer, this);
 	this.timer.start();
-	this.key = null;;
+
+
+	this.keyPairs = keyPairs;
+
+	// for(var i = 0; i < keyPairs.length; i++){
+	// 	keyPairs[i]
+	// }
+	keyPairs[0][0].onDown.add(this.step, this);
+	keyPairs[0][1].onDown.add(this.step, this);
+
+	this.keyIndex = 0;
+	this.pairIndex = 0;
+
+	this.isStarting = true;
 
 	this.onHit = new Phaser.Signal();
 	this.onMiss = new Phaser.Signal();
+	this.onDeg = new Phaser.Signal();
 };
 
 
@@ -30,50 +39,42 @@ RhythmEngine.prototype = {
 	},
 
 	step: function(e){
-		var key = e.keyCode;
+		var key = e;
 		var ms = this.timer.ms;
-		var failed = false;
 
-		//time in beat shifted by stepGrace
-		var delta = ms%this.timerLength - (this.timerLength - this.grace);
-
-		//hit same key or wrong time
-		if(this.keyHit || key == this.lastKey || Math.abs(delta) > this.grace){
-			this.missStep();
-			failed = true;
-		}
-		else{
+		if(key == this.keyPairs[this.pairIndex][this.keyIndex]){
 			this.hitStep();
 		}
+		else{
+			if(this.isStarting){
+				this.keyIndex = (this.keyIndex+1)%2;
+				this.isStarting = false;
+			}
+			else
+				//let them start however they want next time
+				this.isStarting = true;
 
-		this._keyToHit = this.lastKey;
-		this.keyHit = true;
+			this.missStep();
+		}
 
-		this.lastKey = null;
-		if(!failed)
-			this.lastKey = key;
+		this.keyIndex = (this.keyIndex+1)%2;
+	},
+
+	getPair: function(){
+		return this.keyPairs[this.pairIndex];
 	},
 
 
 	endTimer: function(){
-		if(!this.keyHit){
-			this.missStep();
+		var keyPairs = this.keyPairs;
+		var pairIndex = this.pairIndex;
+		this.onDeg.dispatch(this.MISS)
+		if(Math.floor(this.timer.ms/this.degTime)%10 == 0){
+			keyPairs[pairIndex][0].onDown.remove(this.step, this);
+			keyPairs[pairIndex][1].onDown.remove(this.step, this);
+			this.pairIndex = Math.floor((Math.random() * keyPairs.length));
+			keyPairs[pairIndex][0].onDown.add(this.step, this);
+			keyPairs[pairIndex][1].onDown.add(this.step, this);
 		}
-		this.keyHit = false;
 	},
-
-	getMs: function(){
-		return this.timer.ms;
-	},
-
-	getDelta: function(){
-		return this.timer.ms % this.timerLength - (this.timerLength - this.grace);
-	},
-
-	getAccuracy: function(){
-		if(Math.abs(this.getDelta()) > this.grace){
-			return this.MISS;
-		}
-		return this.HIT;
-	}
 }
