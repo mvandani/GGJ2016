@@ -1,6 +1,6 @@
 var MainMenu = function(game){
 };
- 
+
 MainMenu.prototype = {
 	/* State methods */
 	init: function(params){
@@ -14,7 +14,8 @@ MainMenu.prototype = {
 		game.load.image("root", "assets/root.png");
 		game.load.image("mountains", "assets/mountains.png");
 		game.load.image("sky", "assets/sky.png");
-		game.load.image("hill", "assets/chanter-hill.gif");
+		game.load.image("hill", "assets/hill.png");
+		game.load.spritesheet("priests", "assets/priests.png", 267, 200, 2);
 		game.load.spritesheet('button', 'assets/buttons/button_sprite_sheet.png', 193, 71);
 	},
 	create: function(){
