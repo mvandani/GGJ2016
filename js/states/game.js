@@ -173,6 +173,7 @@ GameState.prototype = {
 	attachRunnerToPlayer: function(runner) {
 		var game = this.game;
 		this.player.kill();
+		runner.kill();
 	},
 	render: function(){
 		this.game.debug.text(this.score, 10, 20, "#000");
