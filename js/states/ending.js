@@ -4,7 +4,10 @@ var Ending = function(game){
 
 Ending.prototype = {
 	init: function(params){
-		this.params = params;
+		this.params = params || {
+			// defaults
+			score: 0,
+		};
 	},
 	preload: function(){
 	},
@@ -18,7 +21,7 @@ Ending.prototype = {
 		this.add.tileSprite(0, 0, w, h, "ending-bg");
 
 		// Play!
-		game.add.button(game.world.centerX - 95, game.world.centerY * 1.5, 'button', this.actionOnClick, this, 2, 1, 0);
+		game.add.button(w - 250, game.world.centerY * 1.4, "retry_button", this.actionOnClick, this, 1, 0, 1);
 	},
 	actionOnClick: function(){
 		this.game.state.start("GameState");

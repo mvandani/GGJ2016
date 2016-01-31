@@ -20,6 +20,7 @@ MainMenu.prototype = {
 		game.load.image("ending-bg", "assets/ending.jpg");
 		game.load.spritesheet("priests", "assets/priests.png", 267, 200, 2);
 		game.load.spritesheet('button', 'assets/buttons/start_button.png', 202, 171);
+		game.load.spritesheet("retry_button", "assets/buttons/retry_button.png", 202, 171);
 	},
 	create: function(){
 		var game = this.game;
