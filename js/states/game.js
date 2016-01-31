@@ -213,14 +213,14 @@ GameState.prototype = {
 	},
 	onFailedChant: function(){
 		this.totalDefectors += this.game.gameManager.failedChantPenalty;
-		this.totalFollowers -= this.game.gameManager.failedChantPenalty;
+		//this.totalFollowers -= this.game.gameManager.failedChantPenalty;
         if (this.leftFollowerInd <= this.rightFollowerInd){
             for (i = 0; i < this.game.gameManager.failedChantPenalty; i++){
                 this.followers[this.rightFollowerInd].leave();
                 this.rightFollowerInd--;
             }
         }
-		this.totalFollowers -= this.game.gameManager.failedChantPenalty;
+		//this.totalFollowers -= this.game.gameManager.failedChantPenalty;
 		// Subtract from the total population
 		this.game.gameManager.totalPopulation -= this.game.gameManager.failedChantPenalty;
 		this.combo = 0;
@@ -252,7 +252,7 @@ GameState.prototype = {
 			this.game.state.start("Win", true, false);
 			return;
 		}
-		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation;
+		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation + "\nFollowers: " + this.totalFollowers;
 		/*
 		// Checks the current amount of followers and adjusts the amount of priests and the gauge.
 		for(var i = 1; i <= this.game.gameManager.followersNeededForEachLevel.length; i++)
