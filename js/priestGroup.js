@@ -29,7 +29,7 @@ PriestGroup.prototype.destroy = function(){
 	Phaser.Group.prototype.destroy.call(this);
 };
 
-PriestGroup.prototype.addPriest = function(){
+PriestGroup.prototype.addPriest = function(index){
 	if(this.children.length == this.game.gameManager.maxPriests)
 		return;
 	// Update all the currently alive priests levels
@@ -44,7 +44,7 @@ PriestGroup.prototype.addPriest = function(){
 	{
 		if(this.priestSpots[i] == null)
 		{
-			var pd = this.game.gameManager.priests[i];
+			var pd = this.game.gameManager.getRandomPriestData(index);
 			var priest = this.add(new Priest(this.game, 0, 0, pd));
 			priest.x = (i * 96) + 20;
 			this.priestSpots[i] = priest;
@@ -89,6 +89,8 @@ PriestGroup.prototype.killPriest = function(){
 			break;
 		}
 	}
+	// Retunn the priestdata to the pool
+	this.game.gameManager.returnPriestData(unluckyPriest.priestData);
 	unluckyPriest.kill();
 	this.numPriests--;
 	this.onPriestLost.dispatch();

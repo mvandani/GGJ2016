@@ -25,5 +25,16 @@ GameManager.prototype = {
 		this.failedChantPenalty = 2;
         // The followers for each level should be done programatically...
         this.followersNeededForEachLevel = [5, 15, 35, 60, 100, 150, 200];
-    }
+        this.priestsToChooseFrom = this.priests.concat();
+    },
+    // Passing in an index will force a return of that index
+    getRandomPriestData: function(index){
+    	if(typeof(index) !== 'undefined')
+    		return this.priestsToChooseFrom.splice(index, 1)[0];
+    	var randIndex = this.game.rnd.integerInRange(0, this.priestsToChooseFrom.length - 1);
+    	return this.priestsToChooseFrom.splice(randIndex, 1)[0];
+    },
+    returnPriestData: function(priestData){
+    	this.priestsToChooseFrom.push(priestData);
+    },
 };
