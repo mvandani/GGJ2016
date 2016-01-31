@@ -182,7 +182,7 @@ Priest.prototype.onKeyPress = function(keyCode){
 };
 
 Priest.prototype.kill = function(){
-	tween = this.game.add.tween(this).to({alpha:0}, 150, Phaser.Easing.Linear.None, true, 0, 0, false);
+	tween = this.game.add.tween(this).to({alpha:0}, 500, Phaser.Easing.Linear.None, true, 0, 0, false);
 	tween.onComplete.add(this.destroy, this);
 	//this.destroy();
 };

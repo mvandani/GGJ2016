@@ -126,7 +126,7 @@ MainMenu.prototype = {
             }
             x = 500;
         } else if (this.menuState == "Instructions") {
-            text += 'Help the priests perform their rituals!\nPress the keys when they light up to\nget the worshippers to make a sacrifice.\nTry to get a rhythm going!';
+            text += 'A volcano has appeared on the island!\nHelp the priests perform their rituals!\nPress the keys when they light up to\nget the worshippers to make a sacrifice.\nTry to get a rhythm going and vanquish\nthe volcano!';
             y = 300;
             font = fontAssets.instructionsFontStyle;
         } else {
