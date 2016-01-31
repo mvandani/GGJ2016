@@ -2,13 +2,13 @@ GameManager = function(game){
 	this.game = game;
 	// Create an array of key combinations we can use for the priests.
 	// TODO: This should be randomized.
-	this.priests = [{shownTime: 2, inputTime: 1, followerCount: 1, priest:"novice", keys: [Phaser.KeyCode.UP]},
-				{shownTime: 3, inputTime: 1, followerCount: 2, priest:"monk", keys: [Phaser.KeyCode.DOWN]},
-				{shownTime: 5, inputTime: 1, followerCount: 3, priest:"harp_lady", keys: [Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT]},
-				{shownTime: 7, inputTime: 2, followerCount: 4, priest:"geese", keys: [Phaser.KeyCode.W]},
-				{shownTime: 10, inputTime: 2, followerCount: 5, priest:"shadow", keys: [Phaser.KeyCode.S]},
-				{shownTime: 15, inputTime: 3, followerCount: 6, priest:"idol", keys: [Phaser.KeyCode.A, Phaser.KeyCode.D]},
-				{shownTime: 15, inputTime: 3, followerCount: 7, priest:"nun", keys: [Phaser.KeyCode.Q, Phaser.KeyCode.E]}
+	this.priests = [{shownTime: 3, inputTime: 2, followerCount: 1, priest: "novice", track: this.game.audioManager.priest, keys: [Phaser.KeyCode.UP, Phaser.KeyCode.DOWN]},
+				{shownTime: 3, inputTime: 2, followerCount: 1, priest: "monk", track: this.game.audioManager.conga, keys: [Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT]},
+				{shownTime: 3, inputTime: 2, followerCount: 1, priest: "harp_lady", track: this.game.audioManager.aGuitar, keys: [Phaser.KeyCode.W, Phaser.KeyCode.S]},
+				{shownTime: 3, inputTime: 2, followerCount: 1, priest: "geese", track: this.game.audioManager.sax, keys: [Phaser.KeyCode.A, Phaser.KeyCode.D]},
+				{shownTime: 3, inputTime: 2, followerCount: 1, priest: "shadow", track: this.game.audioManager.drums, keys: [Phaser.KeyCode.Q, Phaser.KeyCode.E]},
+				{shownTime: 3, inputTime: 2, followerCount: 1, priest: "idol", track: this.game.audioManager.trumpet, keys: [Phaser.KeyCode.C, Phaser.KeyCode.V]},
+				{shownTime: 3, inputTime: 2, followerCount: 1, priest: "nun", track: this.game.audioManager.eGuitar, keys: [Phaser.KeyCode.F, Phaser.KeyCode.G]}
 	];
     this.reset();
 };

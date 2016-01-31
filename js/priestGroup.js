@@ -1,6 +1,5 @@
 PriestGroup = function(game){
 	Phaser.Group.call(this, game);
-	this.lastPriest = null;
 	this.numPriests = 0;
 
 	this.gainFollowers = new Phaser.Signal();
@@ -8,10 +7,9 @@ PriestGroup = function(game){
 	this.onSuccessfulInput = new Phaser.Signal();
 	this.onPriestAdded = new Phaser.Signal();
 	this.onPriestLost = new Phaser.Signal();
-
-
-	this.onSuccessfulInput = new Phaser.Signal();
 	this.onFailedInput = new Phaser.Signal();
+
+	this.priestSpots = {0:null, 1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
 }
 
 PriestGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -34,16 +32,33 @@ PriestGroup.prototype.destroy = function(){
 PriestGroup.prototype.addPriest = function(){
 	if(this.children.length == this.game.gameManager.maxPriests)
 		return;
+	// Update all the currently alive priests levels
+	this.forEach(function(priest){
+		priest.levelUp();
+	}, this);
 	// Add a new priest after a successfull input
 	// Priest(game, x, y, time, keys)
-	var pd = this.game.gameManager.priests[this.children.length];
-	var priest = this.add(new Priest(this.game, (this.children.length * 96) + 20, 0, pd));
-	priest.onSuccessfulChant.add(this.onSuccessfulChant, this);
-	priest.onFailedChant.add(this.onFailedPriestChant, this);
-	priest.onSuccessfulInput.add(this.priestSuccessfulInput, this);
-	this.numPriests++;;
-	this.lastPriest = priest;
-	this.onPriestAdded.dispatch(priest);
+	// When spawning, always try to grab the leftmost spot
+	var priest = null;
+	for(var i = 0; i < this.game.gameManager.maxPriests; i++)
+	{
+		if(this.priestSpots[i] == null)
+		{
+			var pd = this.game.gameManager.priests[i];
+			var priest = this.add(new Priest(this.game, 0, 0, pd));
+			priest.x = (i * 96) + 20;
+			this.priestSpots[i] = priest;
+			break;
+		}
+	}
+	if(priest != null)
+	{
+		priest.onSuccessfulChant.add(this.onSuccessfulChant, this);
+		priest.onFailedChant.add(this.onFailedPriestChant, this);
+		priest.onSuccessfulInput.add(this.priestSuccessfulInput, this);
+		this.numPriests++;;
+		this.onPriestAdded.dispatch(priest);
+	}
 };
 
 PriestGroup.prototype.onSuccessfulChant = function(priest){
@@ -52,22 +67,30 @@ PriestGroup.prototype.onSuccessfulChant = function(priest){
 
 PriestGroup.prototype.onFailedPriestChant = function(){
 	this.onFailedChant.dispatch();
-	if(this.children.length > 0)
-		this.lastPriest = this.children[this.children.length - 1];
 };
 
 PriestGroup.prototype.priestSuccessfulInput = function(priest){
 	this.onSuccessfulInput.dispatch(priest);
 };
 
-PriestGroup.prototype.killLeader = function(){
-	// Blow up the last priest added?
-	this.lastPriest.onSuccessfulChant.remove(this.onSuccessfulChant, this);
-	this.lastPriest.onFailedChant.remove(this.onFailedPriestChant, this);
-	this.lastPriest.onSuccessfulInput.remove(this.priestSuccessfulInput, this);
-	this.lastPriest.kill();
+PriestGroup.prototype.killPriest = function(){
+	// Choose one at random!
+	var randIndx = this.game.rnd.integerInRange(0, this.children.length -1);
+	var unluckyPriest = this.getChildAt(randIndx);
+	unluckyPriest.onSuccessfulChant.remove(this.onSuccessfulChant, this);
+	unluckyPriest.onFailedChant.remove(this.onFailedPriestChant, this);
+	unluckyPriest.onSuccessfulInput.remove(this.priestSuccessfulInput, this);
+	// Relenquish his parking spot
+	for(var i = 0; i < this.game.gameManager.maxPriests; i++)
+	{
+		if(this.priestSpots[i] == unluckyPriest)
+		{
+			this.priestSpots[i] = null;
+			break;
+		}
+	}
+	unluckyPriest.kill();
 	this.numPriests--;
-	this.lastPriest = this.children[this.children.length - 1];
 	this.onPriestLost.dispatch();
 };
 
