@@ -1,18 +1,17 @@
 Worshipper = function(game, x, y){
-	// InputTime MUST be shorter than showingTime!
 	Phaser.Sprite.call(this, game, x, y, 'followers');
     this.anchor.setTo(0.5, 1);
-    this.speed = this.game.rnd.integerInRange(5,15)
+    this.speed = this.game.rnd.integerInRange(8,12);
     this.scale.setTo(0.5, 0.5);
     this.animations.add('idle', [0,1,2,3,4,5,6,7], this.speed, true);
-    this.animations.add('leave', [8,9,10,11,12,13,14,15], this.speed, true);
+    this.animations.add('leave', [8,9,10,11,12,13,14,15], this.speed * 2, true);
     this.animations.add('sacrifice', [16,17,18,19,20,21,22,23], this.speed, true);
     this.animations.play('idle');
     
     this.onSuccessfulChant = new Phaser.Signal();
     this.onFailedChant = new Phaser.Signal();
     
-    this.moveConst = 1;
+    this.moveConst = this.speed / 10;
     
     this.scream = this.game.add.audio('scream');
 
@@ -77,6 +76,7 @@ Worshipper.prototype.update = function(){
             if (this.y <= this.height){
                 this.state = "fall";
                 this.sendToBack();
+                this.game.world.sendToBack(this.game.clouds);
                 this.game.bg.sendToBack();
                // this.scream.play();
             }
