@@ -12,6 +12,8 @@ Worshipper = function(game, x, y){
     this.onFailedChant = new Phaser.Signal();
     
     this.moveConst = 1;
+    
+    this.scream = this.game.add.audio('scream');
 
 //    this.moveTimer = this.game.time.create(false);
 //    this.delayStart = moveTimer;
@@ -74,7 +76,8 @@ Worshipper.prototype.update = function(){
             if (this.y <= this.height){
                 this.state = "fall";
                 this.sendToBack();
-                // send background to back
+                this.game.bg.sendToBack();
+                this.scream.play();
             }
             break;
         case "fall":
@@ -85,16 +88,3 @@ Worshipper.prototype.update = function(){
             break;
     }
 };
-
-/*
-Worshipper.prototype.destroy = function(){
-   	this.showControlsTimer.destroy();
-   	this.timesUpTimer.destroy();
-	// Go out in a blaze of glory...
-	Phaser.Sprite.prototype.destroy.call(this);
-};
-
-Worshipper.prototype.kill = function(){
-	this.destroy();
-};
-*/

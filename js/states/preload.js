@@ -14,7 +14,8 @@ Preload.prototype = {
 		this.game.load.image('right', 'assets/images/right.png');
 
 		// Backgrounds
-		this.game.load.image('game_bg', 'assets/images/Volcano.png');
+		this.game.load.image('game_bg', 'assets/images/Background.png');
+		this.game.load.image('volcano', 'assets/images/Volcano.png');
 
 		// Particles
 		this.game.load.image('key_particle', 'assets/images/particle.png');
@@ -39,6 +40,8 @@ Preload.prototype = {
     	this.game.load.audio('e_guitar', 'assets/sound/music/E-Guitar.mp3');
     	this.game.load.audio('trumpet', 'assets/sound/music/Trumpet.mp3');
     	this.game.load.audio('sax', 'assets/sound/music/Sax.mp3');
+        // and fx
+    	this.game.load.audio('scream', 'assets/sound/fx/WilhelmScream.mp3');
 	},
 	create: function(){
 		// For the particles
