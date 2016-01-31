@@ -11,10 +11,6 @@ GameState.prototype = {
 		{
             var follower = new Worshipper(this.game, (450 + i) - (i % 24), 350 + 10 * (i % 24) + this.game.rnd.integerInRange(0, 9));
             this.game.world.add(follower);
-//			var follower = this.game.add.sprite((450 + i) - (i % 24), 350 + 10 * (i % 24) + this.game.rnd.integerInRange(0, 10), 'followers');
-//            follower.anchor.setTo(0.5, 1);
-//			follower.animations.add('idle', [0,1,2,3,4,5,6,7,8,9,10,11], this.game.rnd.integerInRange(5,15), true);
-//			follower.animations.play('idle');
             this.followers.push(follower);
 		}
         this.leftFollowerInd = 0; // every follower with index lower than this has gone to the volcano
@@ -156,9 +152,11 @@ GameState.prototype = {
 	},
 	onFailedInput: function(){
 		this.totalDefectors += this.game.gameManager.followersPenalty;
-        for (i = 0; i < this.game.gameManager.followersPenalty; i++){
-            this.followers[this.rightFollowerInd].leave();
-            this.rightFollowerInd--;
+        if (this.leftFollowerInd <= this.rightFollowerInd){
+            for (i = 0; i < this.game.gameManager.followersPenalty; i++){
+                this.followers[this.rightFollowerInd].leave();
+                this.rightFollowerInd--;
+            }
         }
 		this.checkFollowerCount();
 	},
@@ -193,9 +191,11 @@ GameState.prototype = {
 	onFollowersGained: function(followerCount){
 		// Add a bit more followers based on the combo
 		followerCount = followerCount + this.game.math.roundTo(followerCount * this.combo / 10, 0);
-        for (i = 0; i < followerCount; i++){
-            this.followers[this.leftFollowerInd].sacrifice();
-            this.leftFollowerInd++;
+        if (this.leftFollowerInd <= this.rightFollowerInd){
+            for (i = 0; i < followerCount; i++){
+                this.followers[this.leftFollowerInd].sacrifice();
+                this.leftFollowerInd++;
+            }
         }
 		this.totalFollowers += followerCount;
 		this.game.gameManager.totalPopulation -= followerCount;
@@ -205,9 +205,11 @@ GameState.prototype = {
 	onFailedChant: function(){
 		this.totalDefectors += this.game.gameManager.failedChantPenalty;
 		this.totalFollowers -= this.game.gameManager.failedChantPenalty;
-        for (i = 0; i < this.game.gameManager.failedChantPenalty; i++){
-            this.followers[this.rightFollowerInd].leave();
-            this.rightFollowerInd--;
+        if (this.leftFollowerInd <= this.rightFollowerInd){
+            for (i = 0; i < this.game.gameManager.failedChantPenalty; i++){
+                this.followers[this.rightFollowerInd].leave();
+                this.rightFollowerInd--;
+            }
         }
 		this.totalFollowers -= this.game.gameManager.failedChantPenalty;
 		// Subtract from the total population

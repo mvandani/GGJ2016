@@ -1,6 +1,5 @@
 Worshipper = function(game, x, y){
 	// InputTime MUST be shorter than showingTime!
-    console.log(x, y);
 	Phaser.Sprite.call(this, game, x, y, 'followers');
     this.anchor.setTo(0.5, 1);
     this.speed = this.game.rnd.integerInRange(5,15)
@@ -12,8 +11,7 @@ Worshipper = function(game, x, y){
     this.onSuccessfulChant = new Phaser.Signal();
     this.onFailedChant = new Phaser.Signal();
     
-    this.preciseX = x;
-    this.preciseY = y;
+    this.moveConst = 1;
 
 //    this.moveTimer = this.game.time.create(false);
 //    this.delayStart = moveTimer;
@@ -53,18 +51,37 @@ Worshipper.prototype.update = function(){
 	Phaser.Sprite.prototype.update.call(this);
 	switch(this.state) {
         case "leave":
-            this.x += 1;
+            this.x += this.moveConst;
             if (this.x - 24 > 800){
                 this.stop();
             }
             break;
         case "run":
-            this.x -= 1;
+            this.x -= 2 * this.moveConst;
             if (this.y > 97 * this.x / 36 - 478){ // arrived at vo
                 this.state = "climb";
             }
             break;
         case "climb":
+            this.x -= 2 * this.moveConst * (36 / Math.sqrt(Math.pow(36, 2) + Math.pow(97, 2)));
+            this.y -= 2 * this.moveConst * (97 / Math.sqrt(Math.pow(36, 2) + Math.pow(97, 2)));
+            if (this.y < 117){
+                this.state = "jump";
+            }
+            break;
+        case "jump":
+            this.y -= 5 * this.moveConst;
+            if (this.y <= this.height){
+                this.state = "fall";
+                this.sendToBack();
+                // send background to back
+            }
+            break;
+        case "fall":
+            this.y += 5 * this.moveConst;
+            if (this.y > 350){
+                this.state = "stop";
+            }
             break;
     }
 };
