@@ -7,6 +7,8 @@ GameState.prototype = {
 		this.game.bg = this.game.add.sprite(0, 0, 'game_bg');
         this.game.clouds = new CloudGroup(this.game);
 		this.bg = this.game.add.sprite(0, 0, 'volcano');
+		//this.game.add.tween(this.bg).to({alpha:.5}, 1500, Phaser.Easing.Bounce.In, true, 0);
+
 		this.smoke = this.game.add.sprite(0, 0, 'smoke');
         
         this.game.followerNoiseEnabled = true;
