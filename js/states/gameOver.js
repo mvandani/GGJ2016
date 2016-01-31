@@ -224,6 +224,7 @@ GameOver.prototype = {
 		this.scaleGroup.visible = false;
 	},
     enterHandler: function(){
+    	this.gameOverMusic.destroy();
         this.game.gameManager.reset();
         this.game.state.start("MainMenu");
     }
