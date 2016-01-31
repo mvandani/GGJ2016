@@ -32,12 +32,12 @@ GameState.prototype = {
 
     	this.game.followerNoiseEnabled = true;
 
-        var initialPopulation = 300;
-        this.followers = new Array(300);
+        var initialPopulation = 400;
+        this.followers = new Array(400);
 		for(var i = 0; i < initialPopulation; i++)
 		{
-            var col = i % 15;
-            var row = Math.floor(i / 15);
+            var col = i % 20;
+            var row = Math.floor(i / 20);
             var follower = new Worshipper(this.game, 450 + (16 * col) + 8 *(row % 2), 350 + (10 * row));
             this.game.world.add(follower);
             var newCol = row;
