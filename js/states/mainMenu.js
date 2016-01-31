@@ -84,7 +84,7 @@ MainMenu.prototype = {
             }
             x = 500;
         } else if (this.menuState == "Instructions") {
-            text += 'Help the priests perform the __ ritual!\nPress the keys when they light up to\nget the worshippers to make a sacrifice.\nTry to get a rhythm going!';
+            text += 'Help the priests perform their rituals!\nPress the keys when they light up to\nget the worshippers to make a sacrifice.\nTry to get a rhythm going!';
             y = 300;
             font = fontAssets.instructionsFontStyle;
         } else {

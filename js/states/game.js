@@ -55,31 +55,38 @@ GameState.prototype = {
 		this.totalDefectors = 0;
 
 		// Follower gauge
-		this.gaugeWidth = 512;
-		this.gaugeX = (this.game.world.width / 2) - (this.gaugeWidth / 2);
+		this.gaugeWidth = 625;
+		this.gaugeX = 10; //(this.game.world.width / 2) - (this.gaugeWidth / 2);
+		this.gaugeH = 16;
+
+		var topGaugeY = this.game.world.height - 40;
+		var bottomGaugeY = topGaugeY + this.gaugeH;
 
 		//BG for the bars
-	    this.progressBarBG = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
-	    this.progressBarBG.beginFill(0xFFFFFF);
-	    this.progressBarBG.drawRect(0, 0, this.gaugeWidth, 32);
+	    this.progressBarBG = this.game.add.graphics(this.gaugeX, topGaugeY);
+	    this.progressBarBG.beginFill(0xcccccc);
+	    this.progressBarBG.drawRect(0, 0, this.gaugeWidth, this.gaugeH * 2);
 	    this.progressBarBG.endFill();
 	    // Top "good" bar
-	    this.levelUpProgressBar = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
+	    this.levelUpProgressBar = this.game.add.graphics(this.gaugeX, topGaugeY);
 	    this.levelUpProgressBar.beginFill(0x00FF00);
-	    this.levelUpProgressBar.drawRect(0, 0, 1, 20);
+	    this.levelUpProgressBar.drawRect(0, 0, 1, this.gaugeH);
 	    this.levelUpProgressBar.endFill();
 	    // Bottom "bad" bar
-	    this.levelDownProgressBar = this.game.add.graphics(this.gaugeX + this.gaugeWidth, this.game.world.height - 3);
+	    this.levelDownProgressBar = this.game.add.graphics(this.gaugeX, bottomGaugeY);
 	    this.levelDownProgressBar.beginFill(0xFF0000);
-	    this.levelDownProgressBar.drawRect(0, 0, 1, 12);
+	    this.levelDownProgressBar.drawRect(0, 0, 1, this.gaugeH);
 	    this.levelDownProgressBar.endFill();
-	    this.levelDownProgressBar.angle = 180;
+	    //this.levelDownProgressBar.angle = 180;
 		// Outlines for both bars
-		this.followersGaugeOutline = this.game.add.graphics(this.gaugeX, this.game.world.height - 35);
+		this.followersGaugeOutline = this.game.add.graphics(this.gaugeX, topGaugeY);
 	    this.followersGaugeOutline.lineStyle(2, 0x000000, 1);
-	    this.followersGaugeOutline.drawRect(0, 0, this.gaugeWidth, 32);
-	    this.followersGaugeOutline.moveTo(0, 20);
-	    this.followersGaugeOutline.lineTo(this.gaugeWidth, 20);
+	    this.followersGaugeOutline.drawRect(0, 0, this.gaugeWidth, this.gaugeH * 2);
+	    this.followersGaugeOutline.moveTo(0, this.gaugeH);
+	    this.followersGaugeOutline.lineTo(this.gaugeWidth, this.gaugeH);
+
+	    this.comboText = this.game.add.text(this.gaugeX + this.gaugeWidth - 60, topGaugeY, 'Priest up!', {fontSize: 12, fill: "#000000"});
+	    this.comboText = this.game.add.text(this.gaugeX + this.gaugeWidth - 85, bottomGaugeY, 'Priest down :(', {fontSize: 12, fill: "#000000"});
 
 	    // Audio
 	    this.levelUp = this.game.add.audio('level_up');
@@ -102,7 +109,7 @@ GameState.prototype = {
 	update: function(){
 	},
 	render: function(){
-		this.game.debug.text("Time: " + (this.game.time.now - this.elapsedSinceTime), 32, this.game.world.height - 32);
+		//this.game.debug.text("Time: " + (this.game.time.now - this.elapsedSinceTime), 32, this.game.world.height - 32);
 	},
 	shutdown: function(){
 		this.priestGroup.onPriestAdded.remove(this.onPriestAdded, this);
