@@ -17,7 +17,6 @@ var GameState = function(game){
 	this.MIN_SPEED = 50;
 
 	this.rhythmEngine = null;
-	this.keyPair = null;
 	this.keyPairText = null;
 };
 
@@ -100,8 +99,8 @@ GameState.prototype = {
 		this.rhythmEngine.onHit.add(this.onRhythmHit, this);
 		this.rhythmEngine.onMiss.add(this.onRhythmMiss, this);
 		this.rhythmEngine.onDegrade.add(this.onRhythmDegrade, this);
-		this.keyPair = this.rhythmEngine.getPair();
-		this.keyPairText.text = String.fromCharCode(this.keyPair[0].keyCode) + "  " + String.fromCharCode(this.keyPair[1].keyCode);
+		var keyPair = this.rhythmEngine.getPair();
+		this.keyPairText.text = String.fromCharCode(keyPair[0].keyCode) + "  " + String.fromCharCode(keyPair[1].keyCode);
 	},
 
 	createGround: function() {
@@ -159,13 +158,15 @@ GameState.prototype = {
 		if ((this.grounds[this.offGround].x + (this.scale.width)) >= -2) {
 			this.swapGround();
 		}
-		if (!this.deadPlayer.visible) {
+		if (this.deadPlayer.visible) {
+			this.keyPairText.visible = false;
+		} else {
 			this.score += Math.floor(this.runningSpeed * this.speedScoreFactor);
-		}
 
-		// Rhythm
-		this.keyPair = this.rhythmEngine.getPair();
-		this.keyPairText.text = String.fromCharCode(this.keyPair[0].keyCode) + "  " + String.fromCharCode(this.keyPair[1].keyCode);
+			// Rhythm
+			var keyPair = this.rhythmEngine.getPair();
+			this.keyPairText.text = String.fromCharCode(keyPair[0].keyCode) + "  " + String.fromCharCode(keyPair[1].keyCode);
+		}
 	},
 	swapGround: function() {
 		var w = this.scale.width;
@@ -252,8 +253,9 @@ GameState.prototype = {
 
 	render: function(){
 		this.game.debug.text(this.score, 10, 20, "#000");
-		if (this.keyPair) {
-			var t = String.fromCharCode(this.keyPair[0].keyCode) + " " + String.fromCharCode(this.keyPair[1].keyCode);
+		var kp = this.rhythmEngine.getPair();
+		if (kp) {
+			var t = String.fromCharCode(kp[0].keyCode) + " " + String.fromCharCode(kp[1].keyCode);
 			this.game.debug.text(t, 10, 40, "#000");
 		}
 

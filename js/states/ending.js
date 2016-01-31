@@ -1,10 +1,14 @@
 var Ending = function(game){
 	this.params = null;
+	this.winScore = 10000;
 };
 
 Ending.prototype = {
 	init: function(params){
-		this.params = params;
+		this.params = params || {
+			// defaults
+			score: 0,
+		};
 	},
 	preload: function(){
 	},
@@ -15,10 +19,10 @@ Ending.prototype = {
 
 		var w = this.scale.width;
 		var h = this.scale.height;
-		this.add.tileSprite(0, 0, w, h, "ending-bg");
+		this.add.tileSprite(0, 0, w, h, this.params.score >= this.winScore ? "win" : "loss");
 
 		// Play!
-		game.add.button(game.world.centerX - 95, game.world.centerY * 1.5, 'button', this.actionOnClick, this, 2, 1, 0);
+		game.add.button(w - 250, h - 170, "retry_button", this.actionOnClick, this, 1, 0, 1);
 	},
 	actionOnClick: function(){
 		this.game.state.start("GameState");

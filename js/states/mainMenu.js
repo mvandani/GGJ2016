@@ -17,9 +17,11 @@ MainMenu.prototype = {
 		game.load.image("sky", "assets/sky.png");
 		game.load.image("hill", "assets/hill.png");
 		game.load.image("menu-bg", "assets/mainmenu.jpg");
-		game.load.image("ending-bg", "assets/ending.jpg");
+		game.load.image("loss", "assets/loss.jpg");
+		game.load.image("win", "assets/win.jpg");
 		game.load.spritesheet("priests", "assets/priests.png", 267, 200, 2);
 		game.load.spritesheet('button', 'assets/buttons/start_button.png', 202, 171);
+		game.load.spritesheet("retry_button", "assets/buttons/retry_button.png", 202, 171);
 	},
 	create: function(){
 		var game = this.game;
@@ -29,15 +31,6 @@ MainMenu.prototype = {
 
 		// Play!
 		game.add.button(40, game.world.centerY - 40, 'button', this.actionOnClick, this, 1, 0, 1);
-
-		// Title
-		var titleProps = {
-			font: "60px Arial",
-			fill: "#fff",
-			align: "center"
-		};
-		var title = game.add.text(50, game.world.centerY / 4, "Escape the Volcano", titleProps);
-		title.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
 	},
 
 	actionOnClick: function(){
