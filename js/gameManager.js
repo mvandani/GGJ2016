@@ -28,6 +28,7 @@ GameManager.prototype = {
         // The followers for each level should be done programatically...
         this.followersNeededForEachLevel = [5, 15, 35, 60, 100, 150, 200];
         this.priestsToChooseFrom = this.priests.concat();
+        this.game.input.keyboard.reset();
     },
     // Passing in an index will force a return of that index
     getRandomPriestData: function(index){

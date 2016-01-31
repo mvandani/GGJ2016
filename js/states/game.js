@@ -267,16 +267,29 @@ GameState.prototype = {
 		}
 		this.levelDownProgressBar.width = (this.defectorsGainedLocally / this.game.gameManager.followerPenaltyThreshold) * this.gaugeWidth;
 		// End condition is running out of islanders or priests
-		if(this.game.gameManager.totalPopulation <= 0)
+        if (this.game.gameManager.totalPopulation <= 0 || this.priestGroup.numPriests == 0) {
+            this.game.input.keyboard.destroy();
+            for (i = 0; i < 300; i++){
+                this.followers[i].stop();
+                this.followers[i].blast();
+            }
+            var blastNoise = this.game.add.audio('explosion');
+            blastNoise.play();
+            var blastTimer = this.game.time.create(false);
+            var reason = this.game.gameManager.totalPopulation <= 0 ? "pop" : "priests";
+            blastTimer.add(Phaser.Timer.SECOND * 6, this.endGame, this, reason);
+            blastTimer.start();
+        }
+		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation + "\nFollowers: " + this.game.gameManager.totalFollowers;
+	},
+	endGame: function(reason){
+		if(reason == "pop")
 		{
-			this.game.state.start("GameOver", true, false, "The island has ran out of inhabitants!");
-			return;
+			this.game.state.start("GameOver", true, false, "The island has run out of inhabitants!");
 		}
-		else if(this.priestGroup.numPriests == 0)
+		else
 		{
 			this.game.state.start("GameOver", true, false, "All the priests have been fired!");
-			return;
 		}
-		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation + "\nFollowers: " + this.game.gameManager.totalFollowers;
-	}
+    }
 }
