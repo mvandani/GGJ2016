@@ -14,6 +14,9 @@ Preload.prototype = {
 		this.game.load.image('right', 'assets/images/right.png');
 
 		// Backgrounds
+		this.game.load.image('cloud1', 'assets/images/Cloud 1.png');
+		this.game.load.image('cloud2', 'assets/images/Cloud 2.png');
+		this.game.load.image('cloud3', 'assets/images/Cloud 3.png');
 		this.game.load.image('game_bg', 'assets/images/Background.png');
 		this.game.load.image('volcano', 'assets/images/Volcano.png');
 

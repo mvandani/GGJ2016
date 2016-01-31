@@ -5,6 +5,7 @@ GameState.prototype = {
 	/* State methods */
 	create: function(){
 		this.game.bg = this.game.add.sprite(0, 0, 'game_bg');
+        this.game.clouds = new CloudGroup(this.game);
 		this.bg = this.game.add.sprite(0, 0, 'volcano');
 		this.smoke = this.game.add.sprite(0, 0, 'smoke');
 		
@@ -45,8 +46,6 @@ GameState.prototype = {
 		this.priestGroup.onFailedInput.add(this.onFailedInput, this);
 		this.priestGroup.x = 70;
 		this.priestGroup.y = this.game.world.height - 180;
-		// The group for the party goers
-		this.worshipperGroup = this.game.world.add(new WorshipperGroup(this.game));
 		this.lastSuccessfulPriest = null;
 
 		this.amountNeededForNextLevel = 0;
