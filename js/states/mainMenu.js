@@ -28,7 +28,6 @@ MainMenu.prototype = {
         this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
         this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         this.enterKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-        this.enterKey.onDown.add(this.enterHandler, this);
 
         this.priest = this.add.audio('priest');
         this.conga = this.add.audio('conga');
@@ -164,6 +163,7 @@ MainMenu.prototype = {
     addMenuListeners: function(){
         this.upKey.onDown.add(this.upHandler, this);
         this.downKey.onDown.add(this.downHandler, this);
+        this.enterKey.onDown.add(this.enterHandler, this);
     },
     removeMenuListeners: function(){
         this.upKey.onDown.remove(this.upHandler, this);

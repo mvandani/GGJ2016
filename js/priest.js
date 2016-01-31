@@ -44,6 +44,7 @@ Priest = function(game, x, y, priestData){
     this.showControlsTimer.add(Phaser.Timer.SECOND * this.showingTime, this.showControls, this);
     this.showControlsTimer.start();
     this.track.volume = 1;
+    this.gameStopped = false;
 };
 
 Priest.prototype = Object.create(Phaser.Sprite.prototype);
@@ -54,9 +55,10 @@ Priest.prototype.enterScreen = function() {
 };
 
 Priest.prototype.stop = function(){
+	this.gameStopped = true;
 	this.hideControls();
-   	this.showControlsTimer.destroy();
-   	this.timesUpTimer.destroy();
+   	this.showControlsTimer.stop();
+   	this.timesUpTimer.stop();
 }
 
 Priest.prototype.levelUp = function(){
@@ -132,6 +134,8 @@ Priest.prototype.destroy = function(){
 };
 
 Priest.prototype.showControls = function(){
+	if(this.gameStopped)
+		return;
 	this.controlsShowing = true;
 	this.checkingKeys = this.keys.concat();
     // Create the controls from the keys passed in.

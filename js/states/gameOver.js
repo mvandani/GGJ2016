@@ -34,13 +34,13 @@ GameOver.prototype = {
 		// Show text depending on how the player did
 		if(this.game.gameManager.totalFollowers <= 50)
 			this.performance = "Consider retiring!";
-		else if(this.game.gameManager.totalFollowers <= 100)
+		else if(this.game.gameManager.totalFollowers <= 125)
 			this.performance = "Not such a great job!";
-		else if(this.game.gameManager.totalFollowers <= 150)
-			this.performance = "Good job!";
 		else if(this.game.gameManager.totalFollowers <= 200)
+			this.performance = "Good job!";
+		else if(this.game.gameManager.totalFollowers <= 275)
 			this.performance = "Great job!";
-		else if(this.game.gameManager.totalFollowers <= 250)
+		else if(this.game.gameManager.totalFollowers <= 325)
 			this.performance = "Incredible!";
 		else
 			this.performance = "Are you the pope?! Miraculous job!";
@@ -224,7 +224,7 @@ GameOver.prototype = {
 		this.scaleGroup.visible = false;
 	},
     enterHandler: function(){
-    	this.gameOverMusic.destroy();
+    	this.gameOverMusic.stop();
         this.game.gameManager.reset();
         this.game.state.start("MainMenu");
     }

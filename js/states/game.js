@@ -131,7 +131,6 @@ GameState.prototype = {
                     this.followers[i].state != "readyToBlast" && 
                     this.followers[i].state != "idle"){
                     readyToEnd = false;
-                    console.log(this.followers[i].state);
                 }
             }
             if (readyToEnd) {
