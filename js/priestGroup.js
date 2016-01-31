@@ -12,6 +12,7 @@ PriestGroup = function(game){
 	this.priestSpots = {0:null, 1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
 
 	this.hit = this.game.add.audio('hit');
+	this.miss = this.game.add.audio('miss');
 }
 
 PriestGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -110,6 +111,9 @@ PriestGroup.prototype.onKeyPress = function(keyCode){
 	}, this, false, event);
 	// If no priest answered with a success, remove some followers
 	if(!matchingKeyFound)
+	{
 		this.onFailedInput.dispatch();
+		this.miss.play();
+	}
 	return matchingKeyFound;
 };
