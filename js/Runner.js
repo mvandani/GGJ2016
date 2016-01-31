@@ -2,6 +2,7 @@ var Runner = function(game) {
 	this.game = game;
 	this.startX = -900;
 	Phaser.Sprite.call(this, game, this.startX, -game.cache.getImage("runner").height / 2, 'runner');
+	this.running = false;
 	this.closeToPlayer = false;
 	this.hitPlayer = false;
 	this.wasClose = false;
