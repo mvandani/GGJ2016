@@ -19,7 +19,7 @@ GameManager.prototype = {
 	reset: function(){
         this.maxPriests = 7;
         this.followersNeeded = 200;
-        this.totalPopulation = 50;
+        this.totalPopulation = 400;
         this.followersPenalty = 2;
 		this.followerPenaltyThreshold = 20;
 		this.failedChantPenalty = 2;
