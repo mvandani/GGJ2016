@@ -10,6 +10,7 @@ GameState.prototype = {
 		
 		this.smoke.animations.add('smokey', [0,1,2,3,4,5], 6, true);
     	this.smoke.animations.play('smokey');
+    	this.game.add.tween(this.smoke).to({alpha:.5}, 2000, Phaser.Easing.Circular.InOut, true, 0, -1).yoyo(true,-1);
     	this.smoke.x = 165;
     	this.smoke.y = -28;
     	this.smoke.scale.y = 1.5;
