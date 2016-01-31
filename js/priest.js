@@ -53,6 +53,12 @@ Priest.prototype.enterScreen = function() {
 	this.game.add.tween(this).to({y:0}, 250, Phaser.Easing.Back.Out, true, 0, 0, false);
 };
 
+Priest.prototype.stop = function(){
+	this.hideControls();
+   	this.showControlsTimer.destroy();
+   	this.timesUpTimer.destroy();
+}
+
 Priest.prototype.levelUp = function(){
 	if(this.controlsShowing)
 	{

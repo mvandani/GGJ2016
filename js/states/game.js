@@ -299,6 +299,7 @@ GameState.prototype = {
 		// End condition is running out of islanders or priests
         if (this.game.gameManager.totalPopulation <= 0 || this.priestGroup.numPriests == 0) {
             this.game.input.keyboard.destroy();
+            this.priestGroup.stopAllPriests();
             this.gameplayOver = true;
         }
 		this.populationText.text = "Total island population: " + this.game.gameManager.totalPopulation + "\nFollowers: " + this.game.gameManager.totalFollowers;

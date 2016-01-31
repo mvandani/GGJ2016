@@ -76,6 +76,12 @@ PriestGroup.prototype.priestSuccessfulInput = function(priest){
 	this.onSuccessfulInput.dispatch(priest);
 };
 
+PriestGroup.prototype.stopAllPriests = function(){
+	this.forEach(function(priest){
+		priest.stop();
+	}, this, false, event);
+};
+
 PriestGroup.prototype.killPriest = function(){
 	// Choose one at random!
 	var randIndx = this.game.rnd.integerInRange(0, this.children.length -1);
