@@ -9,14 +9,16 @@ GameState.prototype = {
 		
 		this.bg = this.game.add.sprite(0, 0, 'volcano');
 		this.bg.y = 600;
+
+		this.smoke = this.game.add.sprite(0, 0, 'smoke');
+		this.smoke.alpha = 0;
+
 		volcanoEntranceTween = this.game.add.tween(this.bg).to({y:-25}, 1500, Phaser.Easing.Linear.None, true);
 		volcanoEntranceTween.onComplete.add(function() {
 			volcanoBounceTween = this.game.add.tween(this.bg).to({y:0}, 1000, Phaser.Easing.Bounce.Out, true, 0);
 			volcanoBounceTween.onComplete.add(function(){
-				this.smoke = this.game.add.sprite(0, 0, 'smoke');
 				this.smoke.animations.add('smokey', [0,1,2,3,4,5], 6, true);
 		    	this.smoke.animations.play('smokey');
-		    	this.smoke.alpha = 0;
 		    	this.smoke.x = 165;
 		    	this.smoke.y = -28;
 		    	this.smoke.scale.y = 1.5;
@@ -45,7 +47,7 @@ GameState.prototype = {
         this.leftFollowerInd = 0; // every follower with index lower than this has gone to the volcano
         this.rightFollowerInd = initialPopulation - 1; // every follower with index greater than this has walked away
 		this.introTime = 3;
-		this.introText = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Get ready!', {fontSize: 72});
+		this.introText = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Get ready!', {font: 'Consolas', fontSize: 72});
 		this.introText.anchor.setTo(0.5, 0.5);
 		this.introTimer = this.game.time.create(true);
 		this.introTimer.loop(Phaser.Timer.SECOND * 1, this.updateIntroText, this);
@@ -98,8 +100,8 @@ GameState.prototype = {
 	    this.followersGaugeOutline.moveTo(0, this.gaugeH);
 	    this.followersGaugeOutline.lineTo(this.gaugeWidth, this.gaugeH);
 
-	    this.comboText = this.game.add.text(this.gaugeX + this.gaugeWidth - 60, topGaugeY, 'Priest up!', {fontSize: 12, fill: "#000000"});
-	    this.comboText = this.game.add.text(this.gaugeX + this.gaugeWidth - 85, bottomGaugeY, 'Priest down :(', {fontSize: 12, fill: "#000000"});
+	    this.comboText = this.game.add.text(this.gaugeX + this.gaugeWidth - 70, topGaugeY, 'Priest up!', {font: 'Consolas', fontSize: 12, fill: "#000000"});
+	    this.comboText = this.game.add.text(this.gaugeX + this.gaugeWidth - 95, bottomGaugeY, 'Priest down :(', {font: 'Consolas', fontSize: 12, fill: "#000000"});
 
 	    // Audio
 	    this.levelUp = this.game.add.audio('level_up');
@@ -107,13 +109,13 @@ GameState.prototype = {
 
 		this.elapsedSinceTime = this.game.time.now;
 
-		this.comboText = this.game.add.text(660, this.game.world.height - 30, 'Combo: 0', {fontSize: 22, fill: "#FFFFFF"});
+		this.comboText = this.game.add.text(660, this.game.world.height - 30, 'Combo: 0', {font: 'Consolas', fontSize: 22, fill: "#FFFFFF"});
 		this.combo = 0;
 		this.comboText.visible = false;
-		this.comboFloat = this.game.add.text(0, 0, '25x', {fontSize: 22, fill: "#00FF00"});
+		this.comboFloat = this.game.add.text(0, 0, '25x', {font: 'Consolas', fontSize: 22, fill: "#00FF00"});
 		this.comboFloat.alpha = 0;
 
-		this.populationText = this.game.add.text(15, 15, 'Total island population: ' + this.game.gameManager.totalPopulation, {fontSize:22});
+		this.populationText = this.game.add.text(15, 15, 'Total island population: ' + this.game.gameManager.totalPopulation, {font: 'Consolas', fontSize:22});
         
 	    this.gameStartTimer = this.game.time.create(true);
 	    this.gameStartTimer.add(Phaser.Timer.SECOND * 4, this.beginGame, this);
