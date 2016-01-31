@@ -17,6 +17,7 @@ MainMenu.prototype = {
 		game.load.image("sky", "assets/sky.png");
 		game.load.image("hill", "assets/hill.png");
 		game.load.image("menu-bg", "assets/mainmenu.jpg");
+		game.load.image("ending-bg", "assets/ending.jpg");
 		game.load.spritesheet("priests", "assets/priests.png", 267, 200, 2);
 		game.load.spritesheet('button', 'assets/buttons/button_sprite_sheet.png', 193, 71);
 	},

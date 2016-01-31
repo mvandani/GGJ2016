@@ -19,12 +19,13 @@ var GameState = function(game){
 GameState.prototype = {
 	/* State methods */
 	init: function(params){
-		this.score = 0;
-		this.speedScoreFactor = 0.02;
 	},
 	preload: function(){
 	},
 	create: function(){
+		this.score = 0;
+		this.speedScoreFactor = 0.02;
+
 		var game = this.game;
 		var w = this.scale.width;
 		var h = this.scale.height;
