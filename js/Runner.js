@@ -6,7 +6,6 @@ var Runner = function(game) {
 	this.closeToPlayer = false;
 	this.hitPlayer = false;
 	this.wasClose = false;
-	this.destroyed = false;
 	this.invisBox = new Phaser.Sprite(game, this.startX, -game.cache.getImage("runner").height / 2, "");
 };
 
@@ -30,7 +29,11 @@ Runner.prototype.addToGame = function(dispRoot) {
 }
 Runner.prototype.update = function(runSpeed, player){
 	var game = this.game;
-	if (!this.destroyed && !this.hitPlayer) {
+	if (!this.exists) {
+		return;
+	}
+
+	if (!this.hitPlayer) {
 		this.body.velocity.x = runSpeed + 50;
 		//Readjust buffer based on speed.
 		var buffer = 40 + Math.min(40, Math.floor(runSpeed / 15));
@@ -66,9 +69,12 @@ Runner.prototype.isHit = function() {
 }
 
 Runner.prototype.evade = function() {
-		this.kill();
-		this.invisBox.kill();
-		this.destroyed = true;
+	this.kill();
+}
+
+Runner.prototype.kill = function() {
+	Phaser.Sprite.prototype.kill.call(this);
+	this.invisBox.kill();
 }
 
 Runner.prototype.revive = function() {
@@ -76,7 +82,6 @@ Runner.prototype.revive = function() {
 	this.closeToPlayer = false;
 	this.hitPlayer = false;
 	this.wasClose = false;
-	this.destroyed = false;
 	this.reset(this.startX, -game.cache.getImage("runner").height / 2);
 	this.invisBox.reset(this.startX, -game.cache.getImage("runner").height / 2);
 	this.tint = game.rnd.frac() * 0xffffff;
