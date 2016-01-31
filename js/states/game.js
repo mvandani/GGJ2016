@@ -30,8 +30,15 @@ GameState.prototype = {
 		// Scenery
 		this.sky = this.add.tileSprite(0, 0, w, this.cache.getImage("sky").height, "sky");
 		this.mountain = this.add.tileSprite(0, h - this.cache.getImage("mountains").height -100, w, h, "mountains");
-		var hill = this.add.sprite(150 - this.cache.getImage("hill").width / 3, h - this.cache.getImage("hill").height + 75, "hill");
+		var hill = this.add.sprite(150 - this.cache.getImage("hill").width / 3, h - this.cache.getImage("hill").height + 50, "hill");
 		hill.scale.set(0.7, 0.7);
+
+		// Priests
+		var priests = this.make.sprite(250, 10, "priests");
+		priests.animations.add("chant", [0, 1]);
+		priests.animations.play("chant", 4, true);
+		priests.scale.set(0.8, 0.8);
+		hill.addChild(priests);
 
 		// Display root, ground
 		var root = this.dispRoot = this.add.sprite(w - 150, h * (3/8), "root-x");

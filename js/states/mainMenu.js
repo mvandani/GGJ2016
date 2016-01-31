@@ -1,6 +1,6 @@
 var MainMenu = function(game){
 };
- 
+
 MainMenu.prototype = {
 	/* State methods */
 	init: function(params){
@@ -14,26 +14,27 @@ MainMenu.prototype = {
 		game.load.image("root", "assets/root.png");
 		game.load.image("mountains", "assets/mountains.png");
 		game.load.image("sky", "assets/sky.png");
-		game.load.image("hill", "assets/chanter-hill.gif");
+		game.load.image("hill", "assets/hill.png");
+		game.load.image("menu-bg", "assets/mainmenu.jpg");
+		game.load.spritesheet("priests", "assets/priests.png", 267, 200, 2);
 		game.load.spritesheet('button', 'assets/buttons/button_sprite_sheet.png', 193, 71);
 	},
 	create: function(){
 		var game = this.game;
 		var w = this.scale.width;
 		var h = this.scale.height;
-		this.add.tileSprite(0, 0, w, h, "sky");
+		this.add.tileSprite(0, 0, w, h, "menu-bg");
 
 		// Play!
 		game.add.button(game.world.centerX - 95, game.world.centerY * 1.5, 'button', this.actionOnClick, this, 2, 1, 0);
 
 		// Title
 		var titleProps = {
-			font: "65px Arial",
+			font: "60px Arial",
 			fill: "#fff",
 			align: "center"
 		};
-		var title = game.add.text(game.world.centerX, game.world.centerY / 2, "Escape the Volcano", titleProps);
-		title.anchor.setTo(0.5, 0.5);
+		var title = game.add.text(50, game.world.centerY / 4, "Escape the Volcano", titleProps);
 		title.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
 	},
 
