@@ -69,6 +69,10 @@ GameState.prototype = {
 	    this.followersGaugeOutline.moveTo(0, 20);
 	    this.followersGaugeOutline.lineTo(this.gaugeWidth, 20);
 
+	    // Audio
+	    this.levelUp = this.game.add.audio('level_up');
+	    this.levelDown = this.game.add.audio('level_down');
+
 		this.elapsedSinceTime = this.game.time.now;
 
 		this.comboText = this.game.add.text(660, this.game.world.height - 30, 'Combo: 0', {fontSize: 22, fill: "#FFFFFF"});
@@ -148,7 +152,7 @@ GameState.prototype = {
 
 	},
 	onSuccessfulInput: function(priest){
-		// Set the last preist as the last one to hit a success
+		// Set the last priest as the last one to hit a success
 		this.lastSuccessfulPriest = priest;
 	},
 	onFailedInput: function(){
@@ -220,12 +224,16 @@ GameState.prototype = {
 	},
 	checkFollowerCount: function(){
 		if(this.followersGainedThisLevel >= this.amountNeededForNextLevel)
+		{
 			this.priestGroup.addPriest();
+			this.levelUp.play();
+		}
 		this.levelUpProgressBar.width = (this.followersGainedThisLevel / this.amountNeededForNextLevel) * this.gaugeWidth;
 		if(this.totalDefectors >= this.game.gameManager.followerPenaltyThreshold)
 		{
 			this.totalDefectors = 0;
 			this.priestGroup.killPriest();
+			this.levelDown.play();
 		}
 		this.levelDownProgressBar.width = (this.totalDefectors / this.game.gameManager.followerPenaltyThreshold) * this.gaugeWidth;
 		if(this.totalFollowers < 0)

@@ -77,7 +77,7 @@ Worshipper.prototype.update = function(){
                 this.state = "fall";
                 this.sendToBack();
                 this.game.bg.sendToBack();
-                this.scream.play();
+               // this.scream.play();
             }
             break;
         case "fall":

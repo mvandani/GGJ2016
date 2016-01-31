@@ -40,6 +40,7 @@ Preload.prototype = {
     	this.game.load.audio('e_guitar', 'assets/sound/music/E-Guitar.mp3');
     	this.game.load.audio('trumpet', 'assets/sound/music/Trumpet.mp3');
     	this.game.load.audio('sax', 'assets/sound/music/Sax.mp3');
+    	this.game.load.audio('game_over', 'assets/sound/music/GameOver.mp3')
         // and fx
     	this.game.load.audio('scream', 'assets/sound/fx/WilhelmScream.mp3');
     	this.game.load.audio('explosion', 'assets/sound/fx/Explosion.mp3');
