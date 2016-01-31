@@ -263,7 +263,7 @@ GameState.prototype = {
 			this.priestGroup.killPriest();
 			this.levelDown.play();
 		}
-		this.levelDownProgressBar.width = (this.game.gameManager.totalDefectors / this.game.gameManager.followerPenaltyThreshold) * this.gaugeWidth;
+		this.levelDownProgressBar.width = (this.defectorsGainedLocally / this.game.gameManager.followerPenaltyThreshold) * this.gaugeWidth;
 		// End condition is running out of islanders or priests
 		if(this.game.gameManager.totalPopulation <= 0)
 		{
