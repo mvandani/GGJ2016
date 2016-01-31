@@ -35,7 +35,7 @@ GameState.prototype = {
 		var hill = this.add.sprite(150 - this.cache.getImage("hill").width / 3, h - this.cache.getImage("hill").height + 75, "hill");
 		hill.scale.set(0.7, 0.7);
 
-		var root = this.dispRoot = this.add.sprite(w - 150, h * (3/8), "root");
+		var root = this.dispRoot = this.add.sprite(w - 150, h * (3/8), "root-x");
 		root.rotation = -0.45;
 		this.createGround();
 		this.input.onDown.add(function(){
@@ -59,7 +59,7 @@ GameState.prototype = {
 			this.runnerMap[i] = false;
 		}
 		//Temporary hit button (to evade)
-		this.hitButton = new Phaser.Sprite(game, 0,0, 'runner');
+		this.hitButton = new Phaser.Sprite(game, 0,0, 'root');
 		this.evadeKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		this.evadeKey.onDown.add(this.tryEvade, this);
 
