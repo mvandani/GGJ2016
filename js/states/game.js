@@ -99,7 +99,7 @@ GameState.prototype = {
 	beginGame: function(){
 	    this.game.audioManager.playAllTracks();
 		this.introTimer.destroy();
-		this.priestGroup.addPriest();
+		this.priestGroup.addPriest(0);
 	    // Listen for the input on the keys
 	    this.game.input.keyboard.addCallbacks(this, null, null, this.onKeyPress);
 
