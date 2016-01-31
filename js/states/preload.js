@@ -36,7 +36,13 @@ Preload.prototype = {
 		this.game.load.audio('punch1',["assets/audio/punch1.mp3"]);
 		this.game.load.audio('punch2',["assets/audio/punch2.mp3"]);
 		this.game.load.audio('punch3',["assets/audio/punch3.mp3"]);
-		this.game.load.audio('punch4',["assets/audio/punch4.mp3"]);
+
+		//music
+
+		this.game.load.audio('gameSong',["assets/audio/gameSong.mp3"]);
+		this.game.load.audio('badEnd',["assets/audio/end.mp3"]);
+		this.game.load.audio('goodEnd',["assets/audio/goodEnd.mp3"]);
+		this.game.load.audio('menu',["assets/audio/menu.mp3"]);
 	},
 
 	preload: function(){

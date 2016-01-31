@@ -21,6 +21,8 @@ var GameState = function(game){
 
 	this.bonusSounds = [];
 	this.numKills = 0;
+
+	this.gameSong;
 };
 
 GameState.prototype = {
@@ -28,8 +30,12 @@ GameState.prototype = {
 	init: function(params){
 	},
 	preload: function(){
+		this.gameSong = this.game.add.audio('gameSong');
 	},
 	create: function(){
+
+		this.gameSong.loopFull(0.1);
+
 		this.score = 0;
 		this.speedScoreFactor = 0.02;
 
@@ -240,6 +246,8 @@ GameState.prototype = {
 		this.player.kill();
 		runner.kill();
 		this.deadPlayer.visible = true;
+
+		this.gameSong.stop();
 
 		var stats = {
 			score: this.score,

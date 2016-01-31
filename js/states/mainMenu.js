@@ -1,4 +1,5 @@
 var MainMenu = function(game){
+	this.menuSong;
 };
 
 MainMenu.prototype = {
@@ -7,6 +8,8 @@ MainMenu.prototype = {
 	},
 	preload: function(){
 		var game = this.game;
+		this.menuSong = this.game.add.audio('menu');
+		this.menuSong.loopFull(0.2);
 		game.load.spritesheet('player', 'assets/player.png', 174, 234, 10);
 		game.load.spritesheet('player-drag', 'assets/player-drag.png', 317, 212, 3);
 		game.load.spritesheet('runner', 'assets/runner.png', 174, 234, 3);
@@ -34,6 +37,8 @@ MainMenu.prototype = {
 	},
 
 	actionOnClick: function(){
+
+		this.menuSong.stop();
 		this.game.state.start("GameState");
 	},
 
