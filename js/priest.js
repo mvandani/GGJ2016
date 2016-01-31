@@ -20,10 +20,12 @@ Priest = function(game, x, y, priestData){
     this.onSuccessfulChant = new Phaser.Signal();
     this.onFailedChant = new Phaser.Signal();
 
+    this.levelUpPending = false;
+
 	// Create all the icons and keys to use.
 	// Text will be used for the characters.
 	this.iconLookup = this.game.cache.getJSON('iconLookup');
-	this.controlsBG = this.addChild(new Phaser.Graphics(this.game, this.width - this.iconSize, this.iconSize));
+	this.controlsBG = this.addChild(new Phaser.Graphics(this.game, (this.width / 2) - (this.iconSize / 2), -this.iconSize));
 	this.updateDifficulty();
 
 	// A single emitter that will exist in the game world so the particles will not be hidden when the input is hidden
@@ -45,9 +47,15 @@ Priest.prototype.constructor = Priest;
 
 Priest.prototype.enterScreen = function() {
 	this.game.add.tween(this).to({y:0}, 250, Phaser.Easing.Back.Out, true, 0, 0, false);
-}
+};
 
 Priest.prototype.levelUp = function(){
+	if(this.controlsShowing)
+	{
+		this.levelUpPending = true;
+		return;
+	}
+	this.levelUpPending = false;
 	// Every two times a new priest is added and I am alive, I will level up!
 	this.levelsWhileAlive++;
 	if(this.levelsWhileAlive > 0 && this.levelsWhileAlive % 2 == 0)
@@ -65,11 +73,19 @@ Priest.prototype.updateDifficulty = function(){
 };
 
 Priest.prototype.updateIcons = function(){
-    var controlsHeight = this.keys.length * this.iconSize;
+    var controlsWidth = this.keys.length * this.iconSize;
     this.controlsBG.clear();
     this.controlsBG.beginFill(0xFFFFFF);
     this.controlsBG.lineStyle(2, 0x000000, 1);
-    this.controlsBG.drawRoundedRect(0, 0, this.iconSize, controlsHeight, 4);
+    // Draw left depending on the amount
+    this.controlsBG.drawRoundedRect(-(this.iconSize / 2) * (this.keys.length - 1), 0, controlsWidth, this.iconSize, 4);
+    // Callout
+    this.controlsBG.moveTo(4, this.iconSize);
+    this.controlsBG.lineTo(12, this.iconSize + 8);
+    this.controlsBG.lineTo(20, this.iconSize);
+    this.controlsBG.lineStyle(2, 0xFFFFFF, 1);
+    this.controlsBG.moveTo(19, this.iconSize);
+    this.controlsBG.lineTo(5, this.iconSize);
     this.controlsBG.endFill();
     this.controlsBG.visible = false;
     this.icons = [];
@@ -82,7 +98,7 @@ Priest.prototype.updateIcons = function(){
 		if(keyCode == Phaser.KeyCode.UP || keyCode == Phaser.KeyCode.DOWN || keyCode == Phaser.KeyCode.LEFT || keyCode == Phaser.KeyCode.RIGHT)
 			icon = this.controlsBG.addChild(new Phaser.Sprite(this.game, 0, 0, this.iconLookup[keyCode], 0));
 		else
-			icon = this.controlsBG.addChild(new Phaser.Text(this.game, 2, 0, String.fromCharCode(keyCode), {font: 'Consolas', fontSize: 22, fontWeight: "bold", fill: "#000000"}));
+			icon = this.controlsBG.addChild(new Phaser.Text(this.game, 0, 0, String.fromCharCode(keyCode), {font: 'Consolas', fontSize: 22, fontWeight: "bold", fill: "#000000"}));
 		icon.keyCode = keyCode;
 		this.icons.push(icon);
 	}
@@ -109,11 +125,14 @@ Priest.prototype.showControls = function(){
     // Create the controls from the keys passed in.
     this.controlsBG.visible = true;
     // Loop through the icons and move them accordingly
+    var leftPos = -(this.iconSize / 2) * (this.keys.length - 1);
 	var len = this.keys.length;
 	for(var i = 0; i < len; i++)
 	{
 		var icon = this.icons[i];
-		icon.y = this.iconSize * i;
+		icon.x = leftPos + this.iconSize * i;
+		if(icon instanceof Phaser.Text)
+			icon.x += 6;
 		icon.visible = true;
 	}
     this.timesUpTimer.add(Phaser.Timer.SECOND * this.inputTime, this.timesUp, this);
@@ -130,6 +149,9 @@ Priest.prototype.timesUp = function(){
 Priest.prototype.hideControls = function(){
 	this.controlsShowing = false;
     this.controlsBG.visible = false;
+    // If a level up was pending, level up!
+    if(this.levelUpPending)
+    	this.levelUp();
     this.showControlsTimer.add(Phaser.Timer.SECOND * this.showingTime, this.showControls, this);
     this.showControlsTimer.start();
 };

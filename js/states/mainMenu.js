@@ -10,7 +10,8 @@ var MainMenu = function(game){
 };
 
 var graphicAssets = {
-    menuBackground:{URL:'assets/images/Title.png', name:'background'}
+    menuBackground:{URL:'assets/images/Background.png', name:'background'},
+    titleCard:{URL:'assets/images/Title card.png', name:'titleCard'}
 };
 
 var fontAssets = {
@@ -67,13 +68,20 @@ MainMenu.prototype = {
             "Instructions",
             "Credits"
         ];
+        this.showText = false;
 	},
 	preload: function(){
         this.game.load.image(graphicAssets.menuBackground.name, graphicAssets.menuBackground.URL);
+        this.game.load.image(graphicAssets.titleCard.name, graphicAssets.titleCard.URL);
 	},
 	create: function(){
-        this.addMenuListeners();
         this.backgroundSprite = this.game.add.sprite(0, 0, graphicAssets.menuBackground.name);
+        this.titleCardSprite = this.game.add.sprite(15, -200, graphicAssets.titleCard.name);
+        entranceTween = this.game.add.tween(this.titleCardSprite).to({y:15}, 1000, Phaser.Easing.Bounce.Out, true);
+        entranceTween.onComplete.add(function() {
+            this.addMenuListeners();
+            this.showText = true;
+        }, this);
 	},
 	update: function(){
         this.updateText();
@@ -86,7 +94,7 @@ MainMenu.prototype = {
         var test = "state was " + this.menuState;
         if (this.menuState == "Main") {
             if (this.selected == 0){
-                this.game.state.start("GameState");
+                this.game.state.start("GameState", false, false);
                 // stop the music
                 this.priest.destroy();
                 this.conga.destroy();
@@ -109,6 +117,9 @@ MainMenu.prototype = {
         console.log(test + " now it is " + this.menuState);
     },
     updateText: function(){
+        if(!this.showText)
+            return;
+
         if (this.tf)
             this.tf.destroy();
         var text = '';
