@@ -6,19 +6,29 @@ GameState.prototype = {
 	create: function(){
 		this.game.bg = this.game.add.sprite(0, 0, 'game_bg');
         this.game.clouds = new CloudGroup(this.game);
-		this.bg = this.game.add.sprite(0, 0, 'volcano');
-		//this.game.add.tween(this.bg).to({alpha:.5}, 1500, Phaser.Easing.Bounce.In, true, 0);
-
-		this.smoke = this.game.add.sprite(0, 0, 'smoke');
-        
-        this.game.followerNoiseEnabled = true;
 		
-		this.smoke.animations.add('smokey', [0,1,2,3,4,5], 6, true);
-    	this.smoke.animations.play('smokey');
-    	this.game.add.tween(this.smoke).to({alpha:.5}, 2000, Phaser.Easing.Circular.InOut, true, 0, -1).yoyo(true,-1);
-    	this.smoke.x = 165;
-    	this.smoke.y = -28;
-    	this.smoke.scale.y = 1.5;
+		this.bg = this.game.add.sprite(0, 0, 'volcano');
+		this.bg.y = 600;
+		volcanoEntranceTween = this.game.add.tween(this.bg).to({y:-25}, 1500, Phaser.Easing.Linear.None, true);
+		volcanoEntranceTween.onComplete.add(function() {
+			volcanoBounceTween = this.game.add.tween(this.bg).to({y:0}, 1000, Phaser.Easing.Bounce.Out, true, 0);
+			volcanoBounceTween.onComplete.add(function(){
+				this.smoke = this.game.add.sprite(0, 0, 'smoke');
+				this.smoke.animations.add('smokey', [0,1,2,3,4,5], 6, true);
+		    	this.smoke.animations.play('smokey');
+		    	this.smoke.alpha = 0;
+		    	this.smoke.x = 165;
+		    	this.smoke.y = -28;
+		    	this.smoke.scale.y = 1.5;
+		    	smokeEntranceTween = this.game.add.tween(this.smoke).to({alpha:1}, 1000, Phaser.Easing.Circular.InOut, true);
+		    	smokeEntranceTween.onComplete.add(function() {
+		    		this.smoke.alpha = 1;
+		    		this.game.add.tween(this.smoke).to({alpha:.5}, 2000, Phaser.Easing.Circular.InOut, true).yoyo(true,-1)
+		    	}, this);
+			}, this);
+		}, this);		
+
+    	this.game.followerNoiseEnabled = true;
 
         var initialPopulation = 300;
         this.followers = new Array(300);
