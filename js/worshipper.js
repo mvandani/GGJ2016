@@ -17,11 +17,22 @@ Worshipper = function(game, x, y){
     
     var noises = [
                     this.game.add.audio('scream'),
-                    this.game.add.audio('explosion'),
-                    this.game.add.audio('level_up'),
-                    this.game.add.audio('level_down'),
+                    this.game.add.audio('follower1'),
+                    this.game.add.audio('follower2'),
+                    this.game.add.audio('follower3'),
+                    this.game.add.audio('follower4'),
+                    this.game.add.audio('follower5'),
+                    this.game.add.audio('follower6'),
+                    this.game.add.audio('follower7'),
+                    this.game.add.audio('follower8'),
+                    this.game.add.audio('follower9'),
+                    this.game.add.audio('follower10'),
+                    this.game.add.audio('follower11'),
+                    this.game.add.audio('follower12'),
+                    this.game.add.audio('follower13'),
+                    this.game.add.audio('follower14')
                   ];
-    this.noise = noises[this.game.rnd.integerInRange(0,3)];
+    this.noise = noises[this.game.rnd.integerInRange(0,14)];
     this.blastDelay = this.game.time.create(false);
     this.noiseTimer = this.game.time.create(false);
     this.noiseTimer.loop(Phaser.Timer.SECOND * 1, this.enableNoise, this);

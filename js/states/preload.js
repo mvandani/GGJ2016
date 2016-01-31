@@ -55,6 +55,22 @@ Preload.prototype = {
     	this.game.load.audio('game_over', 'assets/sound/music/GameOver.mp3')
         // and fx
     	this.game.load.audio('scream', 'assets/sound/fx/WilhelmScream.mp3');
+    	this.game.load.audio('follower1', 'assets/sound/fx/Follower1.mp3');
+    	this.game.load.audio('follower2', 'assets/sound/fx/Follower2.mp3');
+    	this.game.load.audio('follower3', 'assets/sound/fx/Follower3.mp3');
+    	this.game.load.audio('follower4', 'assets/sound/fx/Follower4.mp3');
+    	this.game.load.audio('follower5', 'assets/sound/fx/Follower5.mp3');
+    	this.game.load.audio('follower6', 'assets/sound/fx/Follower6.mp3');
+    	this.game.load.audio('follower7', 'assets/sound/fx/Follower7.mp3');
+    	this.game.load.audio('follower8', 'assets/sound/fx/Follower8.mp3');
+    	this.game.load.audio('follower9', 'assets/sound/fx/Follower9.mp3');
+    	this.game.load.audio('follower10', 'assets/sound/fx/Follower10.mp3');
+    	this.game.load.audio('follower11', 'assets/sound/fx/Follower11.mp3');
+    	this.game.load.audio('follower12', 'assets/sound/fx/Follower12.mp3');
+    	this.game.load.audio('follower13', 'assets/sound/fx/Follower13.mp3');
+    	this.game.load.audio('follower14', 'assets/sound/fx/Follower14.mp3');
+
+
     	this.game.load.audio('explosion', 'assets/sound/fx/Explosion.mp3');
     	this.game.load.audio('hit', 'assets/sound/fx/Hit.mp3');
     	this.game.load.audio('miss', 'assets/sound/fx/Miss.mp3');
