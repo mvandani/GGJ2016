@@ -1,5 +1,6 @@
 Worshipper = function(game, x, y){
-	Phaser.Sprite.call(this, game, x, y, 'followers');
+	Phaser.Sprite.call(this, game, 500 + x, y, 'followers');
+    this.startX = x;
     this.anchor.setTo(0.5, 1);
     this.speed = this.game.rnd.integerInRange(8,12);
     this.scale.setTo(0.5, 0.5);
@@ -7,7 +8,7 @@ Worshipper = function(game, x, y){
     this.animations.add('leave', [8,9,10,11,12,13,14,15], this.speed * 2, true);
     this.animations.add('sacrifice', [16,17,18,19,20,21,22,23], this.speed, true);
     this.animations.add('blast', [24,25,26,27,28,29,30,31], this.speed, true);
-    this.animations.play('idle');
+    this.animations.play('sacrifice');
     
     this.onSuccessfulChant = new Phaser.Signal();
     this.onFailedChant = new Phaser.Signal();
@@ -25,10 +26,11 @@ Worshipper = function(game, x, y){
     this.noiseTimer = this.game.time.create(false);
     this.noiseTimer.loop(Phaser.Timer.SECOND * 1, this.enableNoise, this);
     
-    this.state = "idle";
+    this.state = "enter";
     this.blast();
     /*
     LIST OF STATES
+    enter: entering stage
     idle: standing in the crowd
     leave: leaving (lost follower)
     run: walking toward the volcano
@@ -85,6 +87,13 @@ Worshipper.prototype.stop = function(){
 Worshipper.prototype.update = function(){
 	Phaser.Sprite.prototype.update.call(this);
 	switch(this.state) {
+        case "enter":
+            this.x -= 4 * this.moveConst;
+            if (this.x < this.startX){
+                this.state = "idle";
+                this.animations.play('idle');
+            }
+            break;
         case "leave":
             this.x += this.moveConst;
             if (this.x - 24 > 800){
