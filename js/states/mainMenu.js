@@ -40,25 +40,25 @@ MainMenu.prototype = {
         switch (Math.floor(Math.random() * 7))
         {
             case 0:
-                this.priest.play("", 0);
+                this.priest.play("", 0, 1, true);
                 break;
             case 1:
-                this.conga.play("", 0);
+                this.conga.play("", 0, 1, true);
                 break;
             case 2:
-                this.eGuitar.play("", 0);
+                this.eGuitar.play("", 0, 1, true);
                 break;
             case 3:
-                this.trumpet.play("", 0);
+                this.trumpet.play("", 0, 1, true);
                 break;
             case 4:
-                this.aGuitar.play("", 0);
+                this.aGuitar.play("", 0, 1, true);
                 break;
             case 5:
-                this.sax.play("", 0);
+                this.sax.play("", 0, 1, true);
                 break;
             case 6:
-                this.drums.play("", 0);
+                this.drums.play("", 0, 1, true);
                 break;
         }
 
@@ -138,7 +138,7 @@ MainMenu.prototype = {
             }
             x = 500;
         } else if (this.menuState == "Instructions") {
-            text += 'A volcano has appeared on the island!\nHelp the priests perform their rituals!\nPress the keys when they light up to\nget the worshippers to make a sacrifice.\nTry to get a rhythm going and vanquish\nthe volcano!';
+            text += 'A volcano has appeared on the island!\nHelp the priests perform their rituals!\nPress the keys when they appear above\neach priest to get the worshippers\nto make a sacrifice.Try to get a rhythm\ngoing and vanquish the volcano!';
             y = 300;
             font = fontAssets.instructionsFontStyle;
         } else {
