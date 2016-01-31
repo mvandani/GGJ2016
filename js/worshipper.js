@@ -13,7 +13,21 @@ Worshipper = function(game, x, y){
     
     this.moveConst = this.speed / 10;
     
-    this.scream = this.game.add.audio('scream');
+//    	this.game.load.audio('scream', 'assets/sound/fx/WilhelmScream.mp3');
+//    	this.game.load.audio('explosion', 'assets/sound/fx/Explosion.mp3');
+//    	this.game.load.audio('hit', 'assets/sound/fx/Hit.mp3');
+//    	this.game.load.audio('miss', 'assets/sound/fx/Miss.mp3');
+//    	this.game.load.audio('level_down', 'assets/sound/fx/LevelDown.mp3');
+//    	this.game.load.audio('level_up', 'assets/sound/fx/LevelUp.mp3');
+    var noises = [
+                    this.game.add.audio('scream'),
+                    this.game.add.audio('explosion'),
+                    this.game.add.audio('level_up'),
+                    this.game.add.audio('level_down'),
+                  ];
+    this.noise = noises[this.game.rnd.integerInRange(0,3)];
+    this.noiseTimer = this.game.time.create(false);
+    this.noiseTimer.loop(Phaser.Timer.SECOND * 1, this.enableNoise, this);
 
 //    this.moveTimer = this.game.time.create(false);
 //    this.delayStart = moveTimer;
@@ -32,6 +46,11 @@ Worshipper = function(game, x, y){
 
 Worshipper.prototype = Object.create(Phaser.Sprite.prototype);
 Worshipper.prototype.constructor = Worshipper;
+
+Worshipper.prototype.enableNoise = function(){
+    this.game.followerNoiseEnabled = true;
+    this.noiseTimer.stop();
+}
 
 Worshipper.prototype.sacrifice = function(){
     this.state = "run";
@@ -78,7 +97,11 @@ Worshipper.prototype.update = function(){
                 this.sendToBack();
                 this.game.world.sendToBack(this.game.clouds);
                 this.game.bg.sendToBack();
-               // this.scream.play();
+                if (this.game.followerNoiseEnabled){
+                    this.noise.play();
+                    this.game.followerNoiseEnabled = false;
+                    this.noiseTimer.start();
+                }
             }
             break;
         case "fall":
