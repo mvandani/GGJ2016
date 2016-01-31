@@ -10,20 +10,14 @@ Priest = function(game, x, y, priestData){
 	this.priestData = priestData;
 	this.showingTime = priestData.shownTime;
 	this.inputTime = priestData.inputTime;
-	this.keys = priestData.keys;
+	this.baseKeys = priestData.keys;
 	this.followerCount = priestData.followerCount;
 	this.icons = [];
 	this.controlsShowing = false;
 	this.iconSize = 24;
 	this.track = priestData.track;
-
-    var controlsHeight = this.keys.length * this.iconSize;
-	this.controlsBG = this.addChild(new Phaser.Graphics(this.game, this.width - this.iconSize, this.iconSize));
-    this.controlsBG.beginFill(0xFFFFFF);
-    this.controlsBG.lineStyle(2, 0x000000, 1);
-    this.controlsBG.drawRoundedRect(0, 0, this.iconSize, controlsHeight, 4);
-    this.controlsBG.endFill();
-    this.controlsBG.visible = false;
+	this.levelsWhileAlive = 0;
+	this.level = 0;
 
     this.onSuccessfulInput = new Phaser.Signal();
     this.onSuccessfulChant = new Phaser.Signal();
@@ -31,7 +25,9 @@ Priest = function(game, x, y, priestData){
 
 	// Create all the icons and keys to use.
 	// Text will be used for the characters.
-	this.createIcons();
+	this.iconLookup = this.game.cache.getJSON('iconLookup');
+	this.controlsBG = this.addChild(new Phaser.Graphics(this.game, this.width - this.iconSize, this.iconSize));
+	this.updateDifficulty();
 
 	// A single emitter that will exist in the game world so the particles will not be hidden when the input is hidden
 	this.emitter = this.game.add.emitter(0, 0, 100);
@@ -50,15 +46,44 @@ Priest = function(game, x, y, priestData){
 Priest.prototype = Object.create(Phaser.Sprite.prototype);
 Priest.prototype.constructor = Priest;
 
-Priest.prototype.createIcons = function(){
-	var iconLookup = this.game.cache.getJSON('iconLookup');
+Priest.prototype.levelUp = function(){
+	// Every two times a new priest is added and I am alive, I will level up!
+	this.levelsWhileAlive++;
+	if(this.levelsWhileAlive > 0 && this.levelsWhileAlive % 2 == 0)
+		this.updateDifficulty();
+};
+
+Priest.prototype.updateDifficulty = function(){
+	if(this.level + 1 > 3) // No more leveling up!
+		return;
+	this.level++;
+	// Create a new set of keys based on the difficulty level
+	this.keys = [];
+	for(var i = 0; i < this.level; i++)
+	{
+		var rndIndex = this.game.rnd.integerInRange(0, this.baseKeys.length - 1);
+		this.keys.push(this.baseKeys[rndIndex]);
+	}
+	this.updateIcons();
+};
+
+Priest.prototype.updateIcons = function(){
+    var controlsHeight = this.keys.length * this.iconSize;
+    this.controlsBG.clear();
+    this.controlsBG.beginFill(0xFFFFFF);
+    this.controlsBG.lineStyle(2, 0x000000, 1);
+    this.controlsBG.drawRoundedRect(0, 0, this.iconSize, controlsHeight, 4);
+    this.controlsBG.endFill();
+    this.controlsBG.visible = false;
+    this.icons = [];
+    this.controlsBG.removeChildren();
 	var len = this.keys.length;
 	for(var i = 0; i < len; i++)
 	{
 		var keyCode = this.keys[i];
 		var icon = null;
 		if(keyCode == Phaser.KeyCode.UP || keyCode == Phaser.KeyCode.DOWN || keyCode == Phaser.KeyCode.LEFT || keyCode == Phaser.KeyCode.RIGHT)
-			icon = this.controlsBG.addChild(new Phaser.Sprite(this.game, 0, 0, iconLookup[keyCode], 0));
+			icon = this.controlsBG.addChild(new Phaser.Sprite(this.game, 0, 0, this.iconLookup[keyCode], 0));
 		else
 			icon = this.controlsBG.addChild(new Phaser.Text(this.game, 2, 0, String.fromCharCode(keyCode), {fontSize: 22, fontWeight: "bold", fill: "#000000"}));
 		icon.keyCode = keyCode;
@@ -116,13 +141,14 @@ Priest.prototype.keyHit = function(){
 	for(var i = 0; i < len; i++)
 	{
 		var icon = this.controlsBG.getChildAt(i);
-		if(icon.keyCode == keyCode)
-		{
-			this.emitter.x = icon.world.x + (this.iconSize / 2);
-			this.emitter.y = icon.world.y + (this.iconSize / 2);
-		    this.emitter.start(true, 400, null, 60);
-			icon.visible = false;
-		}
+		// get the next visible icon, we know it was a success
+		if(!icon.visible)
+			continue;
+		this.emitter.x = icon.world.x + (this.iconSize / 2);
+		this.emitter.y = icon.world.y + (this.iconSize / 2);
+	    this.emitter.start(true, 400, null, 60);
+		icon.visible = false;
+		break;
 	}
 	this.onSuccessfulInput.dispatch(this);
 	// If there are no more keys to check, the chant was a success

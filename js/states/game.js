@@ -105,6 +105,7 @@ GameState.prototype = {
 	    this.interactionKeys.down.onDown.add(this.onDirectionKeyPress, this);
 	    this.interactionKeys.left.onDown.add(this.onDirectionKeyPress, this);
 	    this.interactionKeys.right.onDown.add(this.onDirectionKeyPress, this);
+	    this.game.audioManager.playAllTracks();
 	},
 	updateIntroText: function(){
 		this.introText.text = this.introTime--;
@@ -202,7 +203,7 @@ GameState.prototype = {
 		if(this.totalDefectors >= this.game.gameManager.followerPenaltyThreshold)
 		{
 			this.totalDefectors = 0;
-			this.priestGroup.killLeader();
+			this.priestGroup.killPriest();
 		}
 		this.levelDownProgressBar.width = (this.totalDefectors / this.game.gameManager.followerPenaltyThreshold) * this.gaugeWidth;
 		if(this.totalFollowers < 0)
