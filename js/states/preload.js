@@ -42,6 +42,11 @@ Preload.prototype = {
     	this.game.load.audio('sax', 'assets/sound/music/Sax.mp3');
         // and fx
     	this.game.load.audio('scream', 'assets/sound/fx/WilhelmScream.mp3');
+    	this.game.load.audio('explosion', 'assets/sound/fx/Explosion.mp3');
+    	this.game.load.audio('hit', 'assets/sound/fx/Hit.mp3');
+    	this.game.load.audio('miss', 'assets/sound/fx/Miss.mp3');
+    	this.game.load.audio('level_down', 'assets/sound/fx/LevelDown.mp3');
+    	this.game.load.audio('level_up', 'assets/sound/fx/LevelUp.mp3');
 	},
 	create: function(){
 		// For the particles

@@ -10,6 +10,8 @@ PriestGroup = function(game){
 	this.onFailedInput = new Phaser.Signal();
 
 	this.priestSpots = {0:null, 1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
+
+	this.hit = this.game.add.audio('hit');
 }
 
 PriestGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -99,7 +101,10 @@ PriestGroup.prototype.onKeyPress = function(keyCode){
 	var matchingKeyFound = false;
 	this.forEach(function(priest){
 		if(priest.onKeyPress(keyCode))
+		{
 			matchingKeyFound = true;
+			this.hit.play();
+		}
 	}, this, false, event);
 	// If no priest answered with a success, remove some followers
 	if(!matchingKeyFound)
