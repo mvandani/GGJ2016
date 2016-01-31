@@ -1,9 +1,30 @@
 <html>
 	<head>
 		<style>
-			* {
-				font-family: "Comic Sans MS", cursive, sans-serif;
-				font-size: 100;
+			html {
+				background-color: #000;
+				font-family: Consolas, sans-serif;
+				font-size: 20px;
+				color: #ccc;
+			}
+			body {
+				background-color: #000;
+				text-align: center;
+				width: 906px;
+				margin: 10px auto;
+			}
+			#game, .flair {
+				float: left;
+			}
+			.flair {
+				margin-left: 10px;
+				margin-right: 10px;
+				margin-top: 520px;
+			}
+			#credits {
+				position: relative;
+				top: 20px;
+				text-align: center;
 			}
 		</style>
 		<script type="text/javascript" src="js/libs/phaser.js"></script>
@@ -34,5 +55,20 @@
 		</script>
 	</head>
 	<body>
+		<div style="margin-bottom: 25px">VOLCANO GAME</div>
+		<div class="flair">
+			<img src="assets/images/Follower idles 1.gif" width="33" height="92" />
+		</div>
+		<div id="game"></div>
+		<div class="flair">
+			<img src="assets/images/Follower idles 2.gif" width="33" height="92" />
+		</div>
+		<div style="clear:both;"></div>
+		<div id="credits">
+			<div style="margin-bottom: 25px">MASSIVE ASSETS</div>
+			<div>Programming - Mic and Shahrukh</div>
+			<div>Sounds and music - Drew</div>
+			<div>Art - Mike</div>
+		</div>
 	</body>
 </html>
