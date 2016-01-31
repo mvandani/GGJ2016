@@ -6,6 +6,7 @@ Worshipper = function(game, x, y){
     this.animations.add('idle', [0,1,2,3,4,5,6,7], this.speed, true);
     this.animations.add('leave', [8,9,10,11,12,13,14,15], this.speed * 2, true);
     this.animations.add('sacrifice', [16,17,18,19,20,21,22,23], this.speed, true);
+    this.animations.add('blast', [24,25,26,27,28,29,30,31], this.speed, true);
     this.animations.play('idle');
     
     this.onSuccessfulChant = new Phaser.Signal();
@@ -13,7 +14,23 @@ Worshipper = function(game, x, y){
     
     this.moveConst = this.speed / 10;
     
-    this.scream = this.game.add.audio('scream');
+//    	this.game.load.audio('scream', 'assets/sound/fx/WilhelmScream.mp3');
+//    	this.game.load.audio('explosion', 'assets/sound/fx/Explosion.mp3');
+//    	this.game.load.audio('hit', 'assets/sound/fx/Hit.mp3');
+//    	this.game.load.audio('miss', 'assets/sound/fx/Miss.mp3');
+//    	this.game.load.audio('level_down', 'assets/sound/fx/LevelDown.mp3');
+//    	this.game.load.audio('level_up', 'assets/sound/fx/LevelUp.mp3');
+    var noises = [
+                    this.game.add.audio('scream'),
+                    this.game.add.audio('explosion'),
+                    this.game.add.audio('level_up'),
+                    this.game.add.audio('level_down'),
+                  ];
+    this.noise = noises[this.game.rnd.integerInRange(0,3)];
+    this.blast = this.game.add.audio('explosion');
+    this.blastDelay = this.game.time.create(false);
+    this.noiseTimer = this.game.time.create(false);
+    this.noiseTimer.loop(Phaser.Timer.SECOND * 1, this.enableNoise, this);
 
 //    this.moveTimer = this.game.time.create(false);
 //    this.delayStart = moveTimer;
@@ -27,11 +44,29 @@ Worshipper = function(game, x, y){
     jump: jumping at the top of the volcano
     fall: falling into the volcano
     stop: off-stage, no animation
+    blast: shoot out of the volcano
     */
 };
 
 Worshipper.prototype = Object.create(Phaser.Sprite.prototype);
 Worshipper.prototype.constructor = Worshipper;
+
+Worshipper.prototype.enableNoise = function(){
+    this.game.followerNoiseEnabled = true;
+    this.noiseTimer.stop();
+}
+
+Worshipper.prototype.blast = function(){
+    this.blastDelay.start(this.game.rnd.integerInRange(2000,5000), this.actuallyBlast, this);
+}
+
+Worshipper.prototype.actuallyBlast = function(){
+    if (this.state = "stop"){
+        this.state = "blast"
+        this.animations.play('blast');
+        this.blast.play();
+    }
+}
 
 Worshipper.prototype.sacrifice = function(){
     this.state = "run";
@@ -78,7 +113,11 @@ Worshipper.prototype.update = function(){
                 this.sendToBack();
                 this.game.world.sendToBack(this.game.clouds);
                 this.game.bg.sendToBack();
-               // this.scream.play();
+                if (this.game.followerNoiseEnabled){
+                    this.noise.play();
+                    this.game.followerNoiseEnabled = false;
+                    this.noiseTimer.start();
+                }
             }
             break;
         case "fall":
