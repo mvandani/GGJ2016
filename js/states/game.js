@@ -17,7 +17,7 @@ var GameState = function(game){
 	this.MIN_SPEED = 50;
 
 	this.rhythmEngine = null;
-	this.keyPairText = null;
+	this.keyHud = null;
 
 	this.bonusSounds = [];
 	this.numKills = 0;
@@ -109,8 +109,6 @@ GameState.prototype = {
 
 
 		// Rhythm engine
-		this.keyPairText = game.add.text(game.world.centerX, game.world.centerY - 200, "", {font: "200px Arial"});
-		this.keyPairText.anchor.setTo(0.5,0.5);
 		var keyPairs = [
 			[game.input.keyboard.addKey(Phaser.Keyboard.W), game.input.keyboard.addKey(Phaser.Keyboard.E)],
 			[game.input.keyboard.addKey(Phaser.Keyboard.C), game.input.keyboard.addKey(Phaser.Keyboard.P)],
@@ -121,8 +119,30 @@ GameState.prototype = {
 		this.rhythmEngine.onHit.add(this.onRhythmHit, this);
 		this.rhythmEngine.onMiss.add(this.onRhythmMiss, this);
 		this.rhythmEngine.onDegrade.add(this.onRhythmDegrade, this);
+
+		// Key hud
 		var keyPair = this.rhythmEngine.getPair();
-		this.keyPairText.text = String.fromCharCode(keyPair[0].keyCode) + "  " + String.fromCharCode(keyPair[1].keyCode);
+		var keyHud = this.keyHud = [];
+		for (var i = 0; i < 3; i++) {
+			var style = null;
+			var labelText = "";
+			switch (i) {
+				case 0:
+				case 1:
+					labelText = String.fromCharCode(keyPair[i].keyCode);
+					break;
+				case 2:
+					labelText = "SPACE";
+					style = {'font': '100px Arial', 'fill': 'black'};
+					break;
+				default:
+					break;
+			}
+			var k = new LabelButton(game, 130 + 170 * i, 100, "key", labelText, style);
+			k.scale.set(0.4, 0.4);
+			game.add.existing(k);
+			keyHud[i] = k;
+		}
 	},
 
 	createGround: function() {
@@ -181,13 +201,16 @@ GameState.prototype = {
 			this.swapGround();
 		}
 		if (this.deadPlayer.visible) {
-			this.keyPairText.visible = false;
+			for (var i = 0; i < this.keyHud.length; i++) {
+				this.keyHud[i].visible = false;
+			}
 		} else {
 			this.score += Math.floor(this.runningSpeed * this.speedScoreFactor);
 
 			// Rhythm
 			var keyPair = this.rhythmEngine.getPair();
-			this.keyPairText.text = String.fromCharCode(keyPair[0].keyCode) + "  " + String.fromCharCode(keyPair[1].keyCode);
+			this.keyHud[0].setLabel(String.fromCharCode(keyPair[0].keyCode));
+			this.keyHud[1].setLabel(String.fromCharCode(keyPair[1].keyCode));
 		}
 	},
 	swapGround: function() {
@@ -260,20 +283,16 @@ GameState.prototype = {
 	},
 
 	onRhythmHit: function(e){
-		this.keyPairText.clearColors();
-		this.keyPairText.addColor("#55AA11", e.i);
-		if (e.i == 0) {
-			this.keyPairText.addColor("#000000", 1);
-		}
+		this.keyHud[0].tint = 0xFFFFFF;
+		this.keyHud[1].tint = 0xFFFFFF;
+		this.keyHud[e.i].tint = 0xfb7c3b;
 		this.runningSpeed = Math.min(this.runningSpeed + 15, this.MAX_SPEED);
 	},
 
 	onRhythmMiss: function(e){
-		this.keyPairText.clearColors();
-		this.keyPairText.addColor("#AA5500", e.i);
-		if (e.i == 0) {
-			this.keyPairText.addColor("#000000", 1);
-		}
+		this.keyHud[0].tint = 0xFFFFFF;
+		this.keyHud[1].tint = 0xFFFFFF;
+		this.keyHud[e.i].tint = 0xAA5500;
 		this.runningSpeed = Math.max(this.runningSpeed - 15, this.MIN_SPEED);
 	},
 
