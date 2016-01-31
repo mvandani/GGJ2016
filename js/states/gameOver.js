@@ -51,7 +51,7 @@ GameOver.prototype = {
 		gameOverTimer.add(Phaser.Timer.SECOND * 2, this.showPerformancePrompt, this);
 		gameOverTimer.start();
 
-		this.worshipperText = this.game.add.text(this.game.world.centerX / 2, 140, this.game.gameManager.totalFollowers + " True worshippers", {font: 'Consolas', fontSize: 16, fill: "#FFFFFF"});
+		this.worshipperText = this.game.add.text(this.game.world.centerX / 2, 140, this.game.gameManager.totalFollowers + " True believers", {font: 'Consolas', fontSize: 16, fill: "#FFFFFF"});
 		this.worshipperText.anchor.setTo(0.5, 0.5);
 		this.worshipperText.visible = false;
 		this.defectorText = this.game.add.text(this.game.world.centerX + (this.game.world.centerX / 2), 140, this.game.gameManager.totalDefectors + " Disbelievers", {font: 'Consolas', fontSize: 16, fill: "#FFFFFF"});
@@ -140,7 +140,7 @@ GameOver.prototype = {
     	this.leftPlatform.body.velocity.y = 0;
     	this.rightPlatform.body.velocity.x = 0;
     	this.rightPlatform.body.velocity.y = 0;
-		this.worshipperText.text = this.worshipperEmitter.totalEmitted + " True worshippers";
+		this.worshipperText.text = this.worshipperEmitter.totalEmitted + " True believers";
 		this.defectorText.text = this.defectorEmitter.totalEmitted + " Disbelievers";
 		if(!this.rotateScale)
 			return;

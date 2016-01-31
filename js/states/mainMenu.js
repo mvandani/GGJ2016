@@ -10,7 +10,7 @@ var MainMenu = function(game){
 };
 
 var graphicAssets = {
-    menuBackground:{URL:'assets/images/Title.png', name:'background'}
+    menuBackground:{URL:'assets/images/Title New.png', name:'background'}
 };
 
 var fontAssets = {
