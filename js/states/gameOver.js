@@ -29,7 +29,7 @@ GameOver.prototype = {
 	preload: function(){
 	},
 	create: function(){
-		this.bg = this.game.add.sprite(0, 0, 'game_bg');
+		this.bg = this.game.add.sprite(0, 0, 'night_bg');
 		this.performance = "";
 		// Show text depending on how the player did
 		if(this.game.gameManager.totalFollowers <= 50)
@@ -45,7 +45,7 @@ GameOver.prototype = {
 		else
 			this.performance = "Are you the pope?! Miraculous job!";
 
-		var gameOverConditionText = this.game.add.text(this.game.world.centerX, 20, this.gameOverCondition, {fontSize: 22});
+		var gameOverConditionText = this.game.add.text(this.game.world.centerX, 20, this.gameOverCondition, {fontSize: 22, fill: "#FFFFFF"});
 		gameOverConditionText.anchor.setTo(0.5, 0.5);
 		var gameOverTimer = this.game.time.create(true);
 		gameOverTimer.add(Phaser.Timer.SECOND * 2, this.showPerformancePrompt, this);
@@ -54,10 +54,10 @@ GameOver.prototype = {
 
 		console.log(this.game.gameManager.totalDefectors);
 
-		this.worshipperText = this.game.add.text(this.game.world.centerX / 2, 140, this.game.gameManager.totalFollowers + " True worshippers", {fontSize: 16});
+		this.worshipperText = this.game.add.text(this.game.world.centerX / 2, 140, this.game.gameManager.totalFollowers + " True worshippers", {fontSize: 16, fill: "#FFFFFF"});
 		this.worshipperText.anchor.setTo(0.5, 0.5);
 		this.worshipperText.visible = false;
-		this.defectorText = this.game.add.text(this.game.world.centerX + (this.game.world.centerX / 2), 140, this.game.gameManager.totalDefectors + " Disbelievers", {fontSize: 16});
+		this.defectorText = this.game.add.text(this.game.world.centerX + (this.game.world.centerX / 2), 140, this.game.gameManager.totalDefectors + " Disbelievers", {fontSize: 16, fill: "#FFFFFF"});
 		this.defectorText.anchor.setTo(0.5, 0.5);
 		this.defectorText.visible = false;
 
@@ -222,7 +222,7 @@ GameOver.prototype = {
 	shutdown: function(){
 	},
 	showPerformancePrompt: function(){
-		var gameOverText = this.game.add.text(this.game.world.centerX, 60, "Your performance... ", {fontSize: 22});
+		var gameOverText = this.game.add.text(this.game.world.centerX, 60, "Your performance... ", {fontSize: 22, fill: "#FFFFFF"});
 		gameOverText.anchor.setTo(0.5, 0.5);
 		this.worshipperText.visible = true;
 		this.defectorText.visible = true;
@@ -241,7 +241,7 @@ GameOver.prototype = {
 		gameOverTimer.start();
 	},
 	showPerformance: function(){
-		var performanceText = this.game.add.text(this.game.world.centerX, 100, this.performance, {fontSize: 22});
+		var performanceText = this.game.add.text(this.game.world.centerX, 100, this.performance, {fontSize: 22, fill: "#FFFFFF"});
 		performanceText.anchor.setTo(0.5, 0.5);
         var enterKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
         enterKey.onDown.addOnce(this.enterHandler, this);
