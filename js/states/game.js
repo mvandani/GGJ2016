@@ -191,8 +191,8 @@ GameState.prototype = {
 	},
 	onFailedInput: function(){
 		this.defectorsGainedLocally += this.game.gameManager.followersPenalty;
-		this.game.gameManager.totalDefectors += this.game.gameManager.followersPenalty;
-		this.game.gameManager.totalPopulation -= this.game.gameManager.followersPenalty;
+		this.game.gameManager.totalDefectors += Math.min(this.game.gameManager.totalPopulation, this.game.gameManager.followersPenalty);
+		this.game.gameManager.totalPopulation -= Math.min(this.game.gameManager.totalPopulation, this.game.gameManager.followersPenalty);
         if (this.leftFollowerInd <= this.rightFollowerInd){
             for (i = 0; i < this.game.gameManager.followersPenalty; i++){
                 this.followers[this.rightFollowerInd].leave();
@@ -233,14 +233,15 @@ GameState.prototype = {
                 this.leftFollowerInd++;
             }
         }
-		this.game.gameManager.totalFollowers += followerCount;
-		this.game.gameManager.totalPopulation -= followerCount;
+		this.game.gameManager.totalFollowers += Math.min(this.game.gameManager.totalPopulation, followerCount);
+		this.game.gameManager.totalPopulation -= Math.min(this.game.gameManager.totalPopulation, followerCount);
 		this.followersGainedThisLevel += followerCount;
 		this.checkFollowerCount();
 	},
 	onFailedChant: function(){
-		this.defectorsGainedLocally += this.game.gameManager.failedChantPenalty;
-		this.game.gameManager.totalDefectors += this.game.gameManager.failedChantPenalty;
+        var penalty = Math.min(this.game.gameManager.totalPopulation, this.game.gameManager.failedChantPenalty);
+		this.defectorsGainedLocally += penalty;
+		this.game.gameManager.totalDefectors += penalty;
         if (this.leftFollowerInd <= this.rightFollowerInd){
             for (i = 0; i < this.game.gameManager.failedChantPenalty; i++){
                 this.followers[this.rightFollowerInd].leave();
@@ -248,7 +249,7 @@ GameState.prototype = {
             }
         }
 		// Subtract from the total population
-		this.game.gameManager.totalPopulation -= this.game.gameManager.failedChantPenalty;
+		this.game.gameManager.totalPopulation -= penalty;
 		this.combo = 0;
 		this.checkFollowerCount();
 	},

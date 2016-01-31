@@ -190,6 +190,7 @@ GameOver.prototype = {
 	showPerformance: function(){
 		var performanceText = this.game.add.text(this.game.world.centerX, 100, this.performance, {font: 'Consolas', fontSize: 22, fill: "#FFFFFF"});
 		performanceText.anchor.setTo(0.5, 0.5);
+        this.game.input.keyboard.start();
         var enterKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
         enterKey.onDown.addOnce(this.enterHandler, this);
 	},
